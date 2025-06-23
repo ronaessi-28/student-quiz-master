@@ -1,10 +1,8 @@
-
 import React, { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { Progress } from '@/components/ui/progress';
-import { CheckCircle, User, BookOpen, Clock, Award } from 'lucide-react';
+import { CheckCircle, User, BookOpen, Award } from 'lucide-react';
 import { quizData } from '@/data/quizData';
 import { useToast } from '@/hooks/use-toast';
 
@@ -19,7 +17,6 @@ interface StudentResponse {
 const Index = () => {
   const [studentName, setStudentName] = useState('');
   const [currentSubject, setCurrentSubject] = useState<string | null>(null);
-  const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
   const [answers, setAnswers] = useState<Record<number, string>>({});
   const [showResults, setShowResults] = useState(false);
   const [allResponses, setAllResponses] = useState<StudentResponse[]>([]);
@@ -27,7 +24,6 @@ const Index = () => {
   const { toast } = useToast();
 
   const currentQuestions = currentSubject ? quizData[currentSubject] : [];
-  const progress = currentSubject ? ((currentQuestionIndex + 1) / currentQuestions.length) * 100 : 0;
 
   const handleStartQuiz = (subject: string) => {
     if (!studentName.trim()) {
@@ -39,24 +35,15 @@ const Index = () => {
       return;
     }
     setCurrentSubject(subject);
-    setCurrentQuestionIndex(0);
     setAnswers({});
     setShowResults(false);
   };
 
-  const handleAnswerSelect = (answer: string) => {
+  const handleAnswerSelect = (questionIndex: number, answer: string) => {
     setAnswers(prev => ({
       ...prev,
-      [currentQuestionIndex]: answer
+      [questionIndex]: answer
     }));
-  };
-
-  const handleNextQuestion = () => {
-    if (currentQuestionIndex < currentQuestions.length - 1) {
-      setCurrentQuestionIndex(prev => prev + 1);
-    } else {
-      handleSubmitQuiz();
-    }
   };
 
   const handleSubmitQuiz = () => {
@@ -80,10 +67,13 @@ const Index = () => {
 
   const resetQuiz = () => {
     setCurrentSubject(null);
-    setCurrentQuestionIndex(0);
     setAnswers({});
     setShowResults(false);
     setStudentName('');
+  };
+
+  const isQuizComplete = () => {
+    return currentQuestions.length > 0 && currentQuestions.every((_, index) => answers[index]);
   };
 
   if (isTeacherView) {
@@ -174,48 +164,50 @@ const Index = () => {
   }
 
   if (currentSubject && currentQuestions.length > 0) {
-    const currentQuestion = currentQuestions[currentQuestionIndex];
-    
     return (
       <div className="min-h-screen bg-gradient-to-br from-purple-50 to-pink-100 p-6">
         <div className="max-w-4xl mx-auto">
           <div className="mb-6">
             <div className="flex justify-between items-center mb-4">
               <h1 className="text-2xl font-bold text-gray-800">{currentSubject}</h1>
-              <div className="flex items-center gap-2 text-gray-600">
-                <Clock className="h-4 w-4" />
-                <span>Question {currentQuestionIndex + 1} of {currentQuestions.length}</span>
+              <div className="text-gray-600">
+                Total Questions: {currentQuestions.length}
               </div>
             </div>
-            <Progress value={progress} className="h-2" />
           </div>
 
-          <Card className="shadow-xl">
+          <Card className="shadow-xl mb-6">
             <CardHeader className="bg-gradient-to-r from-purple-500 to-pink-600 text-white">
-              <CardTitle>Question {currentQuestionIndex + 1}</CardTitle>
+              <CardTitle>All Questions - {currentSubject}</CardTitle>
             </CardHeader>
             <CardContent className="p-8">
-              <h2 className="text-xl font-semibold text-gray-800 mb-6">
-                {currentQuestion.question}
-              </h2>
-              
-              <div className="space-y-3">
-                {currentQuestion.options.map((option, index) => (
-                  <label key={index} className="flex items-center p-4 border-2 border-gray-200 rounded-lg hover:border-purple-300 cursor-pointer transition-colors">
-                    <input
-                      type="radio"
-                      name="answer"
-                      value={option}
-                      checked={answers[currentQuestionIndex] === option}
-                      onChange={(e) => handleAnswerSelect(e.target.value)}
-                      className="mr-3 h-4 w-4 text-purple-600"
-                    />
-                    <span className="text-gray-700">{option}</span>
-                  </label>
+              <div className="space-y-8">
+                {currentQuestions.map((question, questionIndex) => (
+                  <div key={questionIndex} className="border-b border-gray-200 pb-6 last:border-b-0">
+                    <h3 className="text-lg font-semibold text-gray-800 mb-4">
+                      Q{questionIndex + 1}: {question.question}
+                    </h3>
+                    
+                    <div className="space-y-3">
+                      {question.options.map((option, optionIndex) => (
+                        <label key={optionIndex} className="flex items-center p-3 border-2 border-gray-200 rounded-lg hover:border-purple-300 cursor-pointer transition-colors">
+                          <input
+                            type="radio"
+                            name={`question-${questionIndex}`}
+                            value={option}
+                            checked={answers[questionIndex] === option}
+                            onChange={(e) => handleAnswerSelect(questionIndex, e.target.value)}
+                            className="mr-3 h-4 w-4 text-purple-600"
+                          />
+                          <span className="text-gray-700">{option}</span>
+                        </label>
+                      ))}
+                    </div>
+                  </div>
                 ))}
               </div>
 
-              <div className="flex justify-between mt-8">
+              <div className="flex justify-between mt-8 pt-6 border-t border-gray-200">
                 <Button 
                   onClick={() => setCurrentSubject(null)} 
                   variant="outline"
@@ -223,11 +215,11 @@ const Index = () => {
                   Back to Subjects
                 </Button>
                 <Button 
-                  onClick={handleNextQuestion}
-                  disabled={!answers[currentQuestionIndex]}
+                  onClick={handleSubmitQuiz}
+                  disabled={!isQuizComplete()}
                   className="bg-purple-600 hover:bg-purple-700"
                 >
-                  {currentQuestionIndex === currentQuestions.length - 1 ? 'Submit Quiz' : 'Next Question'}
+                  Submit Quiz ({Object.keys(answers).length}/{currentQuestions.length} answered)
                 </Button>
               </div>
             </CardContent>
