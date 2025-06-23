@@ -3,6 +3,7 @@ export interface Question {
   question: string;
   options: string[];
   correctAnswer?: string;
+  type?: 'multiple-choice' | 'coding';
 }
 
 export interface QuizData {
@@ -332,6 +333,121 @@ export const quizData: QuizData = {
       question: "If A can do a job in 5 days, how much work does A do in one day?",
       options: ["1/2", "1/5", "1/10", "5"],
       correctAnswer: "1/5"
+    },
+    {
+      question: "If x = 2, what is the value of 2x + 3?",
+      options: ["5", "6", "7", "8"],
+      correctAnswer: "7"
+    },
+    {
+      question: "Pipe A fills a tank in 6 hours. How much of the tank is filled in 2 hours?",
+      options: ["1/2", "1/3", "1/6", "2/3"],
+      correctAnswer: "1/3"
+    },
+    {
+      question: "Find the average of 2, 4, and 6.",
+      options: ["3", "4", "5", "6"],
+      correctAnswer: "4"
+    },
+    {
+      question: "A car covers 60 km in 2 hours. What is the speed?",
+      options: ["20 km/h", "30 km/h", "40 km/h", "60 km/h"],
+      correctAnswer: "30 km/h"
+    },
+    {
+      question: "Rahul is 10 years older than Amit. If Amit is 20, what is Rahul's age?",
+      options: ["25", "30", "20", "35"],
+      correctAnswer: "30"
+    },
+    {
+      question: "A boat goes 12 km downstream in 1 hour. What is the speed?",
+      options: ["10 km/h", "11 km/h", "12 km/h", "13 km/h"],
+      correctAnswer: "12 km/h"
+    },
+    {
+      question: "If a pen costs ₹20 and is sold at ₹25, what is the profit?",
+      options: ["₹5", "₹10", "₹15", "₹20"],
+      correctAnswer: "₹5"
+    },
+    {
+      question: "What is 25% of 80?",
+      options: ["10", "15", "20", "25"],
+      correctAnswer: "20"
+    },
+    {
+      question: "SI on ₹1000 at 5% for 2 years = ?",
+      options: ["₹50", "₹100", "₹150", "₹200"],
+      correctAnswer: "₹100"
+    },
+    {
+      question: "What is the probability of getting heads in a coin toss?",
+      options: ["0", "1", "1/2", "1/3"],
+      correctAnswer: "1/2"
+    },
+    {
+      question: "A triangle has sides 3 cm, 4 cm, and 5 cm. Is it a right triangle?",
+      options: ["Yes", "No"],
+      correctAnswer: "Yes"
+    },
+    {
+      question: "If 1st Jan is a Monday, what day is 8th Jan?",
+      options: ["Monday", "Tuesday", "Sunday", "Wednesday"],
+      correctAnswer: "Monday"
+    },
+    {
+      question: "If CAT = DBU, then DOG = ?",
+      options: ["EPH", "EQH", "DPH", "ERI"],
+      correctAnswer: "EPH"
+    },
+    {
+      question: "CI on ₹1000 at 10% for 1 year?",
+      options: ["₹100", "₹110", "₹105", "₹115"],
+      correctAnswer: "₹100"
+    },
+    {
+      question: "What is the value of (2 + 3) × 2?",
+      options: ["10", "8", "6", "12"],
+      correctAnswer: "10"
+    },
+    {
+      question: "Area of a rectangle (l = 5, b = 4)?",
+      options: ["10", "20", "25", "30"],
+      correctAnswer: "20"
+    },
+    {
+      question: "How many ways can you arrange A, B, and C?",
+      options: ["3", "4", "6", "9"],
+      correctAnswer: "6"
+    },
+    {
+      question: "Volume of cube with side 2 cm = ?",
+      options: ["4", "6", "8", "10"],
+      correctAnswer: "8"
+    },
+    {
+      question: "What is the angle between the hands of a clock at 3:00?",
+      options: ["30°", "45°", "90°", "60°"],
+      correctAnswer: "90°"
+    },
+    {
+      question: "If tan θ = 1, then θ = ?",
+      options: ["30°", "45°", "60°", "90°"],
+      correctAnswer: "45°"
+    },
+    {
+      question: "A runs at 5 km/h and B at 6 km/h. Who is faster?",
+      options: ["A", "B", "Both same", "Cannot determine"],
+      correctAnswer: "B"
+    },
+    {
+      question: "What is the 4th term of 2, 4, 6, ...?",
+      options: ["6", "8", "10", "12"],
+      correctAnswer: "8"
+    },
+    {
+      question: "log₁₀10 = ?",
+      options: ["0", "1", "2", "10"],
+      correctAnswer: "1"
     }
   ],
   "Logical Ability": [
@@ -359,6 +475,36 @@ export const quizData: QuizData = {
       question: "If marks > 40 and attendance > 75%, then eligible. Rahul has 45 marks and 80% attendance. Is he eligible?",
       options: ["Yes", "No"],
       correctAnswer: "Yes"
+    },
+    {
+      question: "A, B, C are sitting in a row. A is left of B and right of C. Who is in the middle?",
+      options: ["A", "B", "C", "Can't say"],
+      correctAnswer: "A"
+    },
+    {
+      question: "What comes next: 5, 10, 15, __?",
+      options: ["18", "20", "25", "30"],
+      correctAnswer: "20"
+    },
+    {
+      question: "Arrange: infant, teenager, child, adult",
+      options: ["Infant, Child, Teenager, Adult", "Child, Infant, Teenager, Adult", "Infant, Teenager, Child, Adult", "Adult, Teenager, Child, Infant"],
+      correctAnswer: "Infant, Child, Teenager, Adult"
+    },
+    {
+      question: "Pen : Write :: Knife : ?",
+      options: ["Cut", "Eat", "Fight", "Chop"],
+      correctAnswer: "Cut"
+    },
+    {
+      question: "Is A older than B? 1) A is older than C. 2) C is older than B.",
+      options: ["Only 1", "Only 2", "Both", "Either"],
+      correctAnswer: "Both"
+    },
+    {
+      question: "Complete the series: 1, 1, 2, 3, 5, __?",
+      options: ["7", "8", "9", "10"],
+      correctAnswer: "8"
     }
   ],
   "Verbal Ability": [
@@ -386,33 +532,103 @@ export const quizData: QuizData = {
       question: "I ___ a movie yesterday.",
       options: ["watch", "watched", "watching", "watches"],
       correctAnswer: "watched"
+    },
+    {
+      question: "It ___ raining since morning.",
+      options: ["has been", "have been", "is", "was"],
+      correctAnswer: "has been"
+    },
+    {
+      question: "Hot : Cold :: Tall : ?",
+      options: ["Short", "Thin", "Long", "Huge"],
+      correctAnswer: "Short"
+    },
+    {
+      question: "Arrange: 1. goes 2. to school 3. She",
+      options: ["She goes to school", "Goes she to school", "To school she goes", "School goes she to"],
+      correctAnswer: "She goes to school"
+    },
+    {
+      question: "Choose the correct sentence:",
+      options: ["He is a good boy", "He are a good boy", "He am a good boy", "He be a good boy"],
+      correctAnswer: "He is a good boy"
+    },
+    {
+      question: "Synonym of 'fast'?",
+      options: ["Slow", "Quick", "Late", "Stop"],
+      correctAnswer: "Quick"
+    },
+    {
+      question: "___ is my best friend.",
+      options: ["He", "His", "Him", "Her"],
+      correctAnswer: "He"
+    },
+    {
+      question: "Identify the verb: She sings well.",
+      options: ["She", "sings", "well", "none"],
+      correctAnswer: "sings"
+    },
+    {
+      question: "She ___ to school.",
+      options: ["go", "goes", "going", "gone"],
+      correctAnswer: "goes"
+    },
+    {
+      question: "He ran ___ fast.",
+      options: ["very", "many", "too", "so"],
+      correctAnswer: "very"
+    },
+    {
+      question: "The book is ___ the table.",
+      options: ["on", "in", "at", "to"],
+      correctAnswer: "on"
+    },
+    {
+      question: "She is ___ honest girl.",
+      options: ["a", "an", "the", "no article"],
+      correctAnswer: "an"
+    },
+    {
+      question: "I wanted to go, ___ I was tired.",
+      options: ["but", "and", "because", "so"],
+      correctAnswer: "but"
+    },
+    {
+      question: "The past tense of 'run' is:",
+      options: ["ran", "run", "running", "runs"],
+      correctAnswer: "ran"
     }
   ],
   "Basic Coding": [
     {
-      question: "Write a Java program to print all even numbers from 1 to 10. What would be the output?",
-      options: ["1 3 5 7 9", "2 4 6 8 10", "0 2 4 6 8 10", "1 2 3 4 5"],
-      correctAnswer: "2 4 6 8 10"
+      question: "Java Q1: Print Even Numbers from 1 to 10. Write a Java program to print all even numbers from 1 to 10. Expected Output: 2 4 6 8 10",
+      options: [],
+      type: "coding"
     },
     {
-      question: "In Python, what is the sum of elements in list [2, 4, 6]?",
-      options: ["8", "10", "12", "14"],
-      correctAnswer: "12"
+      question: "Java Q2: Check Positive or Negative Number. Write a Java program to check whether a number is positive, negative, or zero. Hint: Use if-else condition.",
+      options: [],
+      type: "coding"
     },
     {
-      question: "Which SQL query displays all records from the 'students' table?",
-      options: ["SELECT * FROM students", "GET ALL FROM students", "SHOW students", "DISPLAY students"],
-      correctAnswer: "SELECT * FROM students"
+      question: "Python Q1: Sum of List Elements. Write a Python program to calculate the sum of elements in a list. Example: list = [2, 4, 6]. Expected Output: 12",
+      options: [],
+      type: "coding"
     },
     {
-      question: "In Java, what is the default value of an int variable?",
-      options: ["null", "0", "1", "undefined"],
-      correctAnswer: "0"
+      question: "Python Q2: Check if Number is Prime. Write a Python program to check if a number entered by the user is a prime number.",
+      options: [],
+      type: "coding"
     },
     {
-      question: "Which SQL query counts the number of rows in the 'orders' table?",
-      options: ["COUNT(*) FROM orders", "SELECT COUNT(*) FROM orders", "TOTAL FROM orders", "SUM FROM orders"],
-      correctAnswer: "SELECT COUNT(*) FROM orders"
+      question: "SQL Q1: Select All Records. Write an SQL query to display all records from the table named 'students'.",
+      options: [],
+      type: "coding"
+    },
+    {
+      question: "SQL Q2: Count Rows in a Table. Write an SQL query to count the number of rows in the 'orders' table.",
+      options: [],
+      type: "coding"
     }
   ]
 };
