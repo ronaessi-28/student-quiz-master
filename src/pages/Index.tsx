@@ -1,10 +1,9 @@
-
 import React, { useState, useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
-import { CheckCircle, User, Award, Clock } from 'lucide-react';
+import { CheckCircle, User, Award, Clock, Download } from 'lucide-react';
 import { quizData } from '@/data/quizData';
 import { useToast } from '@/hooks/use-toast';
 
@@ -13,6 +12,7 @@ interface StudentResponse {
   answers: Record<number, string>;
   completedAt: Date;
   timeSpent: number;
+  id: string;
 }
 
 const Index = () => {
@@ -22,9 +22,34 @@ const Index = () => {
   const [allResponses, setAllResponses] = useState<StudentResponse[]>([]);
   const [isTeacherView, setIsTeacherView] = useState(false);
   const [quizStarted, setQuizStarted] = useState(false);
-  const [timeRemaining, setTimeRemaining] = useState(180 * 60); // 180 minutes in seconds
+  const [timeRemaining, setTimeRemaining] = useState(180 * 60);
   const [startTime, setStartTime] = useState<Date | null>(null);
   const { toast } = useToast();
+
+  // Load responses from localStorage on component mount
+  useEffect(() => {
+    const savedResponses = localStorage.getItem('quizResponses');
+    if (savedResponses) {
+      try {
+        const parsed = JSON.parse(savedResponses);
+        // Convert date strings back to Date objects
+        const responsesWithDates = parsed.map((response: any) => ({
+          ...response,
+          completedAt: new Date(response.completedAt)
+        }));
+        setAllResponses(responsesWithDates);
+      } catch (error) {
+        console.error('Error parsing saved responses:', error);
+      }
+    }
+  }, []);
+
+  // Save responses to localStorage whenever allResponses changes
+  useEffect(() => {
+    if (allResponses.length > 0) {
+      localStorage.setItem('quizResponses', JSON.stringify(allResponses));
+    }
+  }, [allResponses]);
 
   // Flatten all questions from all subjects into one array
   const allQuestions = Object.entries(quizData).flatMap(([subject, questions]) => 
@@ -74,7 +99,7 @@ const Index = () => {
     setShowResults(false);
     setQuizStarted(true);
     setStartTime(new Date());
-    setTimeRemaining(180 * 60); // Reset timer
+    setTimeRemaining(180 * 60);
   };
 
   const handleAnswerSelect = (questionIndex: number, answer: string) => {
@@ -93,7 +118,8 @@ const Index = () => {
       studentName,
       answers,
       completedAt: new Date(),
-      timeSpent
+      timeSpent,
+      id: Date.now().toString() + Math.random().toString(36).substr(2, 9)
     };
 
     setAllResponses(prev => [...prev, response]);
@@ -102,7 +128,7 @@ const Index = () => {
     
     toast({
       title: "Time's Up!",
-      description: "Your quiz has been automatically submitted.",
+      description: "Your quiz has been automatically submitted and saved.",
       variant: "destructive"
     });
   };
@@ -116,7 +142,8 @@ const Index = () => {
       studentName,
       answers,
       completedAt: new Date(),
-      timeSpent
+      timeSpent,
+      id: Date.now().toString() + Math.random().toString(36).substr(2, 9)
     };
 
     setAllResponses(prev => [...prev, response]);
@@ -125,7 +152,7 @@ const Index = () => {
     
     toast({
       title: "Quiz Submitted!",
-      description: "Your responses have been recorded successfully.",
+      description: "Your responses have been recorded and saved successfully.",
     });
   };
 
@@ -138,34 +165,70 @@ const Index = () => {
     setStartTime(null);
   };
 
+  const exportResponses = () => {
+    const dataStr = JSON.stringify(allResponses, null, 2);
+    const dataBlob = new Blob([dataStr], { type: 'application/json' });
+    const url = URL.createObjectURL(dataBlob);
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = `quiz-responses-${new Date().toISOString().split('T')[0]}.json`;
+    link.click();
+    URL.revokeObjectURL(url);
+  };
+
+  const clearAllResponses = () => {
+    if (confirm('Are you sure you want to clear all responses? This action cannot be undone.')) {
+      setAllResponses([]);
+      localStorage.removeItem('quizResponses');
+      toast({
+        title: "Responses Cleared",
+        description: "All quiz responses have been cleared.",
+      });
+    }
+  };
+
   if (isTeacherView) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 p-6">
         <div className="max-w-6xl mx-auto">
           <div className="flex justify-between items-center mb-8">
-            <h1 className="text-3xl font-bold text-gray-800">Student Responses</h1>
-            <Button onClick={() => setIsTeacherView(false)} variant="outline">
-              Back to Quiz
-            </Button>
+            <h1 className="text-3xl font-bold text-gray-800">Student Responses ({allResponses.length})</h1>
+            <div className="flex gap-3">
+              {allResponses.length > 0 && (
+                <>
+                  <Button onClick={exportResponses} variant="outline" className="flex items-center gap-2">
+                    <Download className="h-4 w-4" />
+                    Export Data
+                  </Button>
+                  <Button onClick={clearAllResponses} variant="destructive">
+                    Clear All
+                  </Button>
+                </>
+              )}
+              <Button onClick={() => setIsTeacherView(false)} variant="outline">
+                Back to Quiz
+              </Button>
+            </div>
           </div>
           
           {allResponses.length === 0 ? (
             <Card>
               <CardContent className="text-center py-12">
-                <p className="text-gray-500">No responses yet. Students need to complete quizzes.</p>
+                <p className="text-gray-500 mb-4">No responses yet. Share the quiz link with students to start collecting responses.</p>
+                <p className="text-sm text-gray-400">Quiz URL: {window.location.href}</p>
               </CardContent>
             </Card>
           ) : (
             <div className="grid gap-6">
-              {allResponses.map((response, index) => (
-                <Card key={index} className="shadow-lg">
+              {allResponses.map((response) => (
+                <Card key={response.id} className="shadow-lg">
                   <CardHeader className="bg-gradient-to-r from-blue-500 to-indigo-600 text-white">
                     <CardTitle className="flex items-center gap-2">
                       <User className="h-5 w-5" />
                       {response.studentName}
                     </CardTitle>
                     <p className="text-blue-100">
-                      Completed: {response.completedAt.toLocaleString()} | Time Spent: {formatTime(response.timeSpent)}
+                      Completed: {response.completedAt.toLocaleString()} | Time Spent: {formatTime(response.timeSpent)} | Questions Answered: {Object.keys(response.answers).length}/{allQuestions.length}
                     </p>
                   </CardHeader>
                   <CardContent className="p-6">
@@ -216,7 +279,7 @@ const Index = () => {
               Great job, {studentName}!
             </h2>
             <p className="text-gray-600 mb-8">
-              You have successfully completed the quiz with {Object.keys(answers).length} out of {allQuestions.length} questions answered. Your responses have been submitted.
+              You have successfully completed the quiz with {Object.keys(answers).length} out of {allQuestions.length} questions answered. Your responses have been submitted and saved.
             </p>
             <div className="flex gap-4 justify-center">
               <Button onClick={resetQuiz} className="bg-blue-600 hover:bg-blue-700">
@@ -354,6 +417,7 @@ const Index = () => {
                 onKeyDown={(e) => {
                   if (e.key === 'Enter') {
                     e.preventDefault();
+                    handleStartQuiz();
                   }
                 }}
               />
@@ -396,6 +460,7 @@ const Index = () => {
                   <li>• You can submit the quiz anytime before the timer ends</li>
                   <li>• The quiz will auto-submit when time runs out</li>
                   <li>• For coding questions, write your answer in the text area provided</li>
+                  <li>• Your responses are automatically saved and can be viewed by the teacher</li>
                 </ul>
               </div>
             </CardContent>
