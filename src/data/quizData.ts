@@ -1,4 +1,3 @@
-
 export interface Question {
   question: string;
   options: string[];
@@ -581,6 +580,384 @@ export const quizData: QuizData = {
       question: "True/False: Java supports operator overloading like C++.",
       options: ["True", "False"],
       correctAnswer: "False"
+    }
+  ],
+  "Quantitative Aptitude": [
+    {
+      question: "Find the smallest number which when divided by 12, 18, and 30 leaves a remainder of 4 in each case.",
+      options: ["184", "364", "368", "188"],
+      correctAnswer: "184"
+    },
+    {
+      question: "The LCM of two numbers is 240 and their HCF is 12. If one number is 60, find the other.",
+      options: ["36", "48", "72", "60"],
+      correctAnswer: "48"
+    },
+    {
+      question: "A can complete a work in 15 days and B in 10 days. They worked together for 5 days. What fraction of the work is left?",
+      options: ["1/4", "1/3", "1/2", "2/3"],
+      correctAnswer: "1/6"
+    },
+    {
+      question: "A pipe can fill a tank in 12 minutes, and another empties it in 8 minutes. Both open together. Time to empty full tank?",
+      options: ["48 min", "24 min", "32 min", "96 min"],
+      correctAnswer: "24 min"
+    },
+    {
+      question: "A train at 60 km/hr crosses a pole in 9 seconds. What is its length?",
+      options: ["150 m", "135 m", "180 m", "120 m"],
+      correctAnswer: "150 m"
+    },
+    {
+      question: "A boat covers 40 km downstream in 4 hrs and returns in 5 hrs. Stream speed?",
+      options: ["1 km/hr", "2 km/hr", "3 km/hr", "4 km/hr"],
+      correctAnswer: "1 km/hr"
+    },
+    {
+      question: "A's income is 20% more than B's. How much less is B's income compared to A's?",
+      options: ["16.67%", "20%", "25%", "12.5%"],
+      correctAnswer: "16.67%"
+    },
+    {
+      question: "Two dice are thrown. What is the probability the sum is divisible by 3?",
+      options: ["1/3", "2/9", "5/18", "1/2"],
+      correctAnswer: "1/3"
+    },
+    {
+      question: "What day of the week was 26th January 1950?",
+      options: ["Tuesday", "Wednesday", "Thursday", "Friday"],
+      correctAnswer: "Thursday"
+    },
+    {
+      question: "CI on ₹8000 for 2 years at 10% per annum compounded yearly is:",
+      options: ["₹1600", "₹1680", "₹1760", "₹1800"],
+      correctAnswer: "₹1680"
+    },
+    {
+      question: "Area of a sector with radius 7 cm and angle 60° is:",
+      options: ["25.67 cm²", "22.5 cm²", "27.5 cm²", "30.25 cm²"],
+      correctAnswer: "25.67 cm²"
+    },
+    {
+      question: "Volume of a cone with radius 3 cm and height 4 cm?",
+      options: ["12π cm³", "16π cm³", "18π cm³", "24π cm³"],
+      correctAnswer: "12π cm³"
+    },
+    {
+      question: "Angle of depression = 30°, height = 60 m. Distance of car?",
+      options: ["60√3 m", "60 m", "30√3 m", "60/√3 m"],
+      correctAnswer: "60√3 m"
+    },
+    {
+      question: "15th term of A.P. 7, 11, 15, …?",
+      options: ["63", "59", "67", "69"],
+      correctAnswer: "63"
+    },
+    {
+      question: "A:B:C invest ₹10000, ₹15000, ₹20000. Profit = ₹42000. B's share?",
+      options: ["₹12000", "₹14000", "₹15000", "₹16000"],
+      correctAnswer: "₹14000"
+    },
+    {
+      question: "Mix ₹10/kg rice with ₹15/kg rice to get ₹12/kg. Ratio?",
+      options: ["3:2", "2:3", "1:2", "2:1"],
+      correctAnswer: "3:2"
+    },
+    {
+      question: "Solve: x² - 5x + 6 = 0",
+      options: ["x = 2 or 3", "x = -2 or -3", "x = 1 or 6", "x = -1 or -6"],
+      correctAnswer: "x = 2 or 3"
+    },
+    {
+      question: "Average of 5 consecutive odd numbers is 35. Smallest number?",
+      options: ["31", "33", "29", "35"],
+      correctAnswer: "31"
+    },
+    {
+      question: "A + B = 45, 5 years ago A = 2×B. Find A.",
+      options: ["25", "30", "35", "20"],
+      correctAnswer: "35"
+    },
+    {
+      question: "Gain = 12% after 10% discount. MP = ₹250. CP?",
+      options: ["₹180", "₹200", "₹210", "₹225"],
+      correctAnswer: "₹200"
+    },
+    {
+      question: "SI on ₹5000 for 3 yrs is ₹900. Rate?",
+      options: ["4%", "5%", "6%", "7%"],
+      correctAnswer: "6%"
+    },
+    {
+      question: "Angles in ratio 3:4:5. Largest angle?",
+      options: ["60°", "90°", "75°", "100°"],
+      correctAnswer: "75°"
+    },
+    {
+      question: "\"MOBILE\" → \"OMCJNG\". \"TABLET\" = ?",
+      options: ["VBMDGU", "VBCDUG", "UACMFS", "UBODVG"],
+      correctAnswer: "VBCDUG"
+    },
+    {
+      question: "√784 + √625 − √121 = ?",
+      options: ["50", "48", "46", "44"],
+      correctAnswer: "46"
+    },
+    {
+      question: "How many ways to arrange \"MATHS\"?",
+      options: ["120", "60", "24", "100"],
+      correctAnswer: "120"
+    },
+    {
+      question: "Angle at 3:30 between hands?",
+      options: ["90°", "75°", "105°", "60°"],
+      correctAnswer: "75°"
+    },
+    {
+      question: "A gives B 100 m in 1 km race and still wins by 40 m. In 1 mile (1609 m), how much headstart does A give B?",
+      options: ["140 m", "160 m", "180 m", "120 m"],
+      correctAnswer: "160 m"
+    },
+    {
+      question: "Solve: log₂(8x) = 5",
+      options: ["4", "8", "2", "1"],
+      correctAnswer: "4"
+    },
+    {
+      question: "What day of the week will be 15th August 2047?",
+      options: ["Thursday", "Friday", "Saturday", "Sunday"],
+      correctAnswer: "Thursday"
+    },
+    {
+      question: "A card drawn from pack. P(Even number < 9)?",
+      options: ["4/13", "6/13", "3/13", "2/13"],
+      correctAnswer: "4/13"
+    },
+    {
+      question: "CP of 2 items = ₹300 each. One sold at 20% profit, other at 20% loss. Overall % gain/loss?",
+      options: ["0%", "2% gain", "4% loss", "5% gain"],
+      correctAnswer: "4% loss"
+    }
+  ],
+  "Logical Ability": [
+    {
+      question: "All apples are fruits. Some fruits are bananas. Conclusion?",
+      options: ["Some bananas are apples", "Some apples are bananas", "All fruits are apples", "No conclusion"],
+      correctAnswer: "No conclusion"
+    },
+    {
+      question: "2, 6, 12, 20, 30, ?",
+      options: ["40", "42", "36", "38"],
+      correctAnswer: "42"
+    },
+    {
+      question: "Walks 3 km North, turns right 4 km, then left 5 km. Direction from start?",
+      options: ["North-East", "South-East", "North-West", "South-West"],
+      correctAnswer: "North-East"
+    },
+    {
+      question: "2, 3, 5, 7, 11, 14, 17, 19",
+      options: ["11", "14", "17", "3"],
+      correctAnswer: "14"
+    },
+    {
+      question: "Needs 60% in both Maths and English. Scored 65% Maths, 58% English. Result?",
+      options: ["Pass", "Fail", "Not Clear", "Depends"],
+      correctAnswer: "Fail"
+    },
+    {
+      question: "A, B, C, D, E in row. C right of D, left of B. A one end, E other end. Center?",
+      options: ["A", "C", "B", "D"],
+      correctAnswer: "D"
+    },
+    {
+      question: "1, 4, 9, 16, ?",
+      options: ["24", "25", "36", "30"],
+      correctAnswer: "25"
+    },
+    {
+      question: "Seed, Tree, Plant, Fruit, Flower",
+      options: ["Seed, Plant, Tree, Flower, Fruit", "Seed, Plant, Flower, Tree, Fruit", "Seed, Plant, Tree, Fruit, Flower", "Plant, Seed, Tree, Fruit, Flower"],
+      correctAnswer: "Seed, Plant, Tree, Flower, Fruit"
+    },
+    {
+      question: "Foot : Shoe :: Hand : ?",
+      options: ["Watch", "Glove", "Ring", "Sleeve"],
+      correctAnswer: "Glove"
+    },
+    {
+      question: "Is A older than B? (1) A > C (2) C > B",
+      options: ["Only 1", "Only 2", "Both", "Either"],
+      correctAnswer: "Both"
+    },
+    {
+      question: "Pen, Pencil, Eraser, Bottle",
+      options: ["Pen", "Pencil", "Eraser", "Bottle"],
+      correctAnswer: "Bottle"
+    },
+    {
+      question: "Facing North, turns right, walks 5 m, turns right again, walks 5 m. Final direction?",
+      options: ["South", "North", "East", "West"],
+      correctAnswer: "South"
+    },
+    {
+      question: "6 persons sit around table. A between B and C, D opposite B. Who is right of D?",
+      options: ["C", "A", "E", "F"],
+      correctAnswer: "A"
+    }
+  ],
+  "Verbal Ability": [
+    {
+      question: "He don't know how to drive.",
+      options: ["doesn't know", "don't knows", "does knows", "No correction"],
+      correctAnswer: "doesn't know"
+    },
+    {
+      question: "The sun ____ in the east.",
+      options: ["rise", "rises", "rising", "rose"],
+      correctAnswer: "rises"
+    },
+    {
+      question: "(Give a passage in exam. Sample Q): What is the main idea of the paragraph?",
+      options: ["Supportive", "Informative", "Persuasive", "Descriptive"],
+      correctAnswer: "Informative"
+    },
+    {
+      question: "The paragraph talks about saving nature. Theme?",
+      options: ["Pollution", "Green Economy", "Environmental Awareness", "GDP"],
+      correctAnswer: "Environmental Awareness"
+    },
+    {
+      question: "It was raining heavily, so I ____ home.",
+      options: ["stay", "stayed", "staying", "stays"],
+      correctAnswer: "stayed"
+    },
+    {
+      question: "Cat : Kitten :: Dog : ?",
+      options: ["Cub", "Puppy", "Foal", "Calf"],
+      correctAnswer: "Puppy"
+    },
+    {
+      question: "(A) to the market (B) I went (C) buy vegetables (D) to",
+      options: ["B-D-A-C", "A-C-D-B", "B-A-D-C", "C-D-B-A"],
+      correctAnswer: "B-A-D-C"
+    },
+    {
+      question: "Synonym of \"Elegant\":",
+      options: ["Rough", "Graceful", "Dirty", "Cheap"],
+      correctAnswer: "Graceful"
+    },
+    {
+      question: "He go to school everyday.",
+      options: ["He goes", "He went", "He going", "No error"],
+      correctAnswer: "He goes"
+    },
+    {
+      question: "\"Brilliant\":",
+      options: ["Dull", "Sharp", "Intelligent", "Clever"],
+      correctAnswer: "Intelligent"
+    },
+    {
+      question: "By next week, he ____ his work.",
+      options: ["will complete", "will have completed", "completed", "completes"],
+      correctAnswer: "will have completed"
+    },
+    {
+      question: "Each of the students must bring ____ own lunch.",
+      options: ["his", "their", "our", "her"],
+      correctAnswer: "his"
+    },
+    {
+      question: "She is singing beautifully. Pick the main verb.",
+      options: ["is", "singing", "beautifully", "she"],
+      correctAnswer: "singing"
+    },
+    {
+      question: "Either my brother or sister ____ going.",
+      options: ["are", "is", "were", "be"],
+      correctAnswer: "is"
+    },
+    {
+      question: "He runs very fast. Identify adverb.",
+      options: ["runs", "very", "fast", "He"],
+      correctAnswer: "fast"
+    },
+    {
+      question: "She was born ____ Delhi.",
+      options: ["on", "in", "at", "to"],
+      correctAnswer: "in"
+    },
+    {
+      question: "He is ____ honest man.",
+      options: ["a", "an", "the", "no article"],
+      correctAnswer: "an"
+    },
+    {
+      question: "Combine: He is poor. He is honest.",
+      options: ["although", "but", "and", "yet"],
+      correctAnswer: "but"
+    },
+    {
+      question: "Antonym of \"Bold\":",
+      options: ["Brave", "Cowardly", "Loud", "Strong"],
+      correctAnswer: "Cowardly"
+    },
+    {
+      question: "Pick correct spelling:",
+      options: ["Achievment", "Achievement", "Acheivment", "Achievemant"],
+      correctAnswer: "Achievement"
+    },
+    {
+      question: "The letter was written by me. Active voice?",
+      options: ["I wrote the letter", "Me wrote the letter", "I have written the letter", "I had wrote"],
+      correctAnswer: "I wrote the letter"
+    },
+    {
+      question: "She said, \"I am tired.\"",
+      options: ["She said that she is tired.", "She said that she was tired.", "She said she were tired.", "She says she is tired."],
+      correctAnswer: "She said that she was tired."
+    }
+  ],
+  "Coding Questions": [
+    {
+      question: "Write a Java function that takes a sentence as input and reverses each word individually while maintaining the word order.\nInput: \"OpenAI builds AI\"\nExpected Output: \"IAnepO sdiulb IA\"",
+      options: [],
+      type: "coding"
+    },
+    {
+      question: "Write a Java method that returns the first non-repeating character in a given string. Return '_' if all characters repeat.\nInput: \"programming\"\nExpected Output: 'p'",
+      options: [],
+      type: "coding"
+    },
+    {
+      question: "Write a Python function that takes a list of words and groups them into anagrams.\nInput: [\"bat\", \"tab\", \"tap\", \"pat\", \"rat\"]\nExpected Output: [['bat', 'tab'], ['tap', 'pat'], ['rat']] (Order doesn't matter)",
+      options: [],
+      type: "coding"
+    },
+    {
+      question: "Write a Python program that prints elements of a 2D matrix in spiral order.\nInput:\nmatrix = [\n  [1, 2, 3],\n  [4, 5, 6],\n  [7, 8, 9]\n]\nExpected Output: [1, 2, 3, 6, 9, 8, 7, 4, 5]",
+      options: [],
+      type: "coding"
+    },
+    {
+      question: "Given a table employees(emp_id, name, department, salary), write an SQL query to return the department(s) having the highest average salary.",
+      options: [],
+      type: "coding"
+    },
+    {
+      question: "Given a table users(id INT, email VARCHAR), write an SQL query to find all duplicate email addresses (those that appear more than once).",
+      options: [],
+      type: "coding"
+    },
+    {
+      question: "Write a C function that returns 1 if a number is a power of 2, otherwise 0. Do not use loops or recursion.\nExample Input: 16\nExpected Output: 1",
+      options: [],
+      type: "coding"
+    },
+    {
+      question: "Write your own function in C to reverse a string (similar to strrev() in some compilers). Do not use library functions.\nInput: \"Coding\"\nExpected Output: \"gnidoC\"",
+      options: [],
+      type: "coding"
     }
   ]
 };

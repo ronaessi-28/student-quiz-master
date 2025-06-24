@@ -3,6 +3,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
+import { CodingTextarea } from '@/components/ui/coding-textarea';
 import { CheckCircle, User, Award, Clock, Download, FileText } from 'lucide-react';
 import { quizData } from '@/data/quizData';
 import { useToast } from '@/hooks/use-toast';
@@ -419,11 +420,11 @@ const Index = () => {
                         <label className="block text-sm font-medium text-gray-700 select-none">
                           Write your code here:
                         </label>
-                        <Textarea
-                          placeholder="Enter your code here..."
+                        <CodingTextarea
+                          placeholder="Enter your code here... (Paste is disabled for coding questions)"
                           value={answers[questionIndex] || ''}
                           onChange={(e) => handleAnswerSelect(questionIndex, e.target.value)}
-                          className="min-h-[150px] font-mono text-sm"
+                          className="min-h-[200px] font-mono text-sm"
                         />
                       </div>
                     ) : (
@@ -541,6 +542,7 @@ const Index = () => {
                   <li>• You can submit the quiz anytime before the timer ends</li>
                   <li>• The quiz will auto-submit when time runs out</li>
                   <li>• For coding questions, write your answer in the text area provided</li>
+                  <li>• Copy-paste is disabled for coding questions to ensure authenticity</li>
                   <li>• Your responses are automatically saved and can be viewed by the teacher</li>
                 </ul>
               </div>
