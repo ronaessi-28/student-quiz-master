@@ -3,9 +3,10 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
-import { CheckCircle, User, Award, Clock, Download } from 'lucide-react';
+import { CheckCircle, User, Award, Clock, Download, FileText } from 'lucide-react';
 import { quizData } from '@/data/quizData';
 import { useToast } from '@/hooks/use-toast';
+import jsPDF from 'jspdf';
 
 interface StudentResponse {
   studentName: string;
@@ -187,6 +188,73 @@ const Index = () => {
     }
   };
 
+  const exportResponsesAsPDF = (response: StudentResponse) => {
+    const pdf = new jsPDF();
+    const pageHeight = pdf.internal.pageSize.height;
+    let yPosition = 20;
+    
+    // Title
+    pdf.setFontSize(16);
+    pdf.setFont('helvetica', 'bold');
+    pdf.text('Quiz Response Report', 20, yPosition);
+    yPosition += 20;
+    
+    // Student info
+    pdf.setFontSize(12);
+    pdf.setFont('helvetica', 'normal');
+    pdf.text(`Student Name: ${response.studentName}`, 20, yPosition);
+    yPosition += 10;
+    pdf.text(`Completed: ${response.completedAt.toLocaleString()}`, 20, yPosition);
+    yPosition += 10;
+    pdf.text(`Time Spent: ${formatTime(response.timeSpent)}`, 20, yPosition);
+    yPosition += 10;
+    pdf.text(`Questions Answered: ${Object.keys(response.answers).length}/${allQuestions.length}`, 20, yPosition);
+    yPosition += 20;
+    
+    // Questions and answers
+    pdf.setFontSize(10);
+    Object.entries(response.answers).forEach(([questionIndex, answer]) => {
+      const question = allQuestions[parseInt(questionIndex)];
+      
+      // Check if we need a new page
+      if (yPosition > pageHeight - 60) {
+        pdf.addPage();
+        yPosition = 20;
+      }
+      
+      // Question
+      pdf.setFont('helvetica', 'bold');
+      const questionText = `Q${parseInt(questionIndex) + 1}: ${question.question}`;
+      const questionLines = pdf.splitTextToSize(questionText, 170);
+      pdf.text(questionLines, 20, yPosition);
+      yPosition += questionLines.length * 5 + 5;
+      
+      // Subject
+      pdf.setFont('helvetica', 'italic');
+      pdf.text(`Subject: ${question.subject}`, 20, yPosition);
+      yPosition += 8;
+      
+      // Answer
+      pdf.setFont('helvetica', 'normal');
+      if (question.type === 'coding') {
+        pdf.text('Code Answer:', 20, yPosition);
+        yPosition += 5;
+        const codeLines = pdf.splitTextToSize(answer, 170);
+        pdf.setFont('courier', 'normal');
+        pdf.text(codeLines, 20, yPosition);
+        yPosition += codeLines.length * 4 + 10;
+      } else {
+        pdf.text(`Answer: ${answer}`, 20, yPosition);
+        yPosition += 10;
+      }
+      
+      yPosition += 5;
+    });
+    
+    // Save the PDF
+    pdf.save(`${response.studentName}_quiz_response.pdf`);
+  };
+
   if (isTeacherView) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 p-6">
@@ -198,7 +266,7 @@ const Index = () => {
                 <>
                   <Button onClick={exportResponses} variant="outline" className="flex items-center gap-2">
                     <Download className="h-4 w-4" />
-                    Export Data
+                    Export JSON
                   </Button>
                   <Button onClick={clearAllResponses} variant="destructive">
                     Clear All
@@ -223,13 +291,26 @@ const Index = () => {
               {allResponses.map((response) => (
                 <Card key={response.id} className="shadow-lg">
                   <CardHeader className="bg-gradient-to-r from-blue-500 to-indigo-600 text-white">
-                    <CardTitle className="flex items-center gap-2">
-                      <User className="h-5 w-5" />
-                      {response.studentName}
-                    </CardTitle>
-                    <p className="text-blue-100">
-                      Completed: {response.completedAt.toLocaleString()} | Time Spent: {formatTime(response.timeSpent)} | Questions Answered: {Object.keys(response.answers).length}/{allQuestions.length}
-                    </p>
+                    <div className="flex justify-between items-center">
+                      <div>
+                        <CardTitle className="flex items-center gap-2">
+                          <User className="h-5 w-5" />
+                          {response.studentName}
+                        </CardTitle>
+                        <p className="text-blue-100">
+                          Completed: {response.completedAt.toLocaleString()} | Time Spent: {formatTime(response.timeSpent)} | Questions Answered: {Object.keys(response.answers).length}/{allQuestions.length}
+                        </p>
+                      </div>
+                      <Button 
+                        onClick={() => exportResponsesAsPDF(response)}
+                        variant="secondary"
+                        size="sm"
+                        className="bg-white/20 hover:bg-white/30 text-white border-white/30"
+                      >
+                        <FileText className="h-4 w-4 mr-2" />
+                        Export PDF
+                      </Button>
+                    </div>
                   </CardHeader>
                   <CardContent className="p-6">
                     <div className="space-y-4">
@@ -297,7 +378,7 @@ const Index = () => {
 
   if (quizStarted && !showResults) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-purple-50 to-pink-100 p-6">
+      <div className="min-h-screen bg-gradient-to-br from-purple-50 to-pink-100 p-6 select-none">
         <div className="max-w-4xl mx-auto">
           <div className="mb-6">
             <div className="flex justify-between items-center mb-4">
@@ -320,22 +401,22 @@ const Index = () => {
             <CardHeader className="bg-gradient-to-r from-purple-500 to-pink-600 text-white">
               <CardTitle>All Questions ({allQuestions.length} Total)</CardTitle>
             </CardHeader>
-            <CardContent className="p-8">
+            <CardContent className="p-8 select-none">
               <div className="space-y-8">
                 {allQuestions.map((question, questionIndex) => (
-                  <div key={questionIndex} className="border-b border-gray-200 pb-6 last:border-b-0">
+                  <div key={questionIndex} className="border-b border-gray-200 pb-6 last:border-b-0 select-none">
                     <div className="flex justify-between items-start mb-4">
-                      <h3 className="text-lg font-semibold text-gray-800">
+                      <h3 className="text-lg font-semibold text-gray-800 select-none">
                         Q{questionIndex + 1}: {question.question}
                       </h3>
-                      <span className="text-sm bg-blue-100 text-blue-800 px-2 py-1 rounded">
+                      <span className="text-sm bg-blue-100 text-blue-800 px-2 py-1 rounded select-none">
                         {question.subject}
                       </span>
                     </div>
                     
                     {question.type === 'coding' ? (
                       <div className="space-y-3">
-                        <label className="block text-sm font-medium text-gray-700">
+                        <label className="block text-sm font-medium text-gray-700 select-none">
                           Write your code here:
                         </label>
                         <Textarea
@@ -348,7 +429,7 @@ const Index = () => {
                     ) : (
                       <div className="space-y-3">
                         {question.options.map((option, optionIndex) => (
-                          <label key={optionIndex} className="flex items-center p-3 border-2 border-gray-200 rounded-lg hover:border-purple-300 cursor-pointer transition-colors">
+                          <label key={optionIndex} className="flex items-center p-3 border-2 border-gray-200 rounded-lg hover:border-purple-300 cursor-pointer transition-colors select-none">
                             <input
                               type="radio"
                               name={`question-${questionIndex}`}
@@ -357,7 +438,7 @@ const Index = () => {
                               onChange={(e) => handleAnswerSelect(questionIndex, e.target.value)}
                               className="mr-3 h-4 w-4 text-purple-600"
                             />
-                            <span className="text-gray-700">{option}</span>
+                            <span className="text-gray-700 select-none">{option}</span>
                           </label>
                         ))}
                       </div>
