@@ -13,622 +13,574 @@ export interface QuizData {
 export const quizData: QuizData = {
   "Computer Networks": [
     {
-      question: "What does IP stand for?",
-      options: ["Internet Protocol", "Internal Program", "Internet Procedure", "Input Protocol"],
-      correctAnswer: "Internet Protocol"
+      question: "Which layer of the OSI model is responsible for end-to-end delivery of messages?",
+      options: ["Session Layer", "Transport Layer", "Network Layer", "Application Layer"],
+      correctAnswer: "Transport Layer"
     },
     {
-      question: "Which of the following is an example of a protocol?",
-      options: ["HTML", "HTTP", "URL", "IP Address"],
-      correctAnswer: "HTTP"
+      question: "In which scenario would a switch fail to forward a frame?",
+      options: ["If it doesn't know the destination MAC", "If it knows the source MAC", "If the frame is too long", "If it uses UDP"],
+      correctAnswer: "If the frame is too long"
     },
     {
-      question: "Which device is used to connect different networks?",
-      options: ["Switch", "Router", "Hub", "Bridge"],
-      correctAnswer: "Router"
+      question: "What is the purpose of the TTL field in an IP packet?",
+      options: ["Error detection", "Packet sequencing", "Prevent routing loops", "Ensure encryption"],
+      correctAnswer: "Prevent routing loops"
     },
     {
-      question: "Which layer of the OSI model handles data encryption?",
-      options: ["Network", "Presentation", "Data Link", "Session"],
-      correctAnswer: "Presentation"
+      question: "Which protocol uses 3-way handshaking?",
+      options: ["FTP", "TCP", "UDP", "ICMP"],
+      correctAnswer: "TCP"
     },
     {
-      question: "True/False: A MAC address is the same as an IP address.",
+      question: "Which of the following IP addresses belongs to Class B?",
+      options: ["10.5.4.3", "172.16.0.1", "192.168.1.1", "224.0.0.1"],
+      correctAnswer: "172.16.0.1"
+    },
+    {
+      question: "What is the main purpose of ARP (Address Resolution Protocol)?",
+      options: ["Convert IP to hostname", "Convert MAC to IP", "Convert IP to MAC", "Encrypt IP packets"],
+      correctAnswer: "Convert IP to MAC"
+    },
+    {
+      question: "Which of the following is true about UDP socket programming?",
+      options: ["Connection is established before data is sent", "Reliable delivery is ensured", "Server must bind the socket", "Acknowledgments are mandatory"],
+      correctAnswer: "Server must bind the socket"
+    },
+    {
+      question: "Which command would show the routing table on a Unix system?",
+      options: ["ping", "nslookup", "traceroute", "netstat -r"],
+      correctAnswer: "netstat -r"
+    },
+    {
+      question: "Consider the output of ping command: Reply from 192.168.1.1: bytes=32 time<1ms TTL=64. What does TTL=64 indicate?",
+      options: ["Time left to transmit", "Delay in ms", "Number of hops remaining", "MAC address"],
+      correctAnswer: "Number of hops remaining"
+    },
+    {
+      question: "True/False: The OSI model has a total of 5 layers.",
       options: ["True", "False"],
       correctAnswer: "False"
     }
   ],
   "C Language": [
     {
-      question: "Which of the following is a valid variable name in C?",
-      options: ["1var", "_value", "int", "float number"],
-      correctAnswer: "_value"
+      question: "What will happen if a break statement is used outside a loop or switch?",
+      options: ["Syntax error", "Skips the next line", "Program terminates", "Compiles but causes segmentation fault"],
+      correctAnswer: "Syntax error"
     },
     {
-      question: "What is the output of: printf(\"%d\", 5 + 2 * 3);",
-      options: ["21", "11", "16", "5"],
+      question: "Which of the following is not a valid storage class in C?",
+      options: ["static", "register", "auto", "dynamic"],
+      correctAnswer: "dynamic"
+    },
+    {
+      question: "If a variable is declared as static inside a function, what is its scope and lifetime?",
+      options: ["Global scope, function lifetime", "Function scope, global lifetime", "File scope, static lifetime", "Local scope, function lifetime"],
+      correctAnswer: "Function scope, global lifetime"
+    },
+    {
+      question: "What is the output of the expression 5 + 2 * 3?",
+      options: ["21", "11", "15", "10"],
       correctAnswer: "11"
     },
     {
-      question: "True/False: scanf() is used to display output on the screen.",
+      question: "What does sizeof('A') return in C?",
+      options: ["1", "2", "4", "Implementation dependent"],
+      correctAnswer: "4"
+    },
+    {
+      question: "What is the return type of main() in modern C standards?",
+      options: ["void", "int", "float", "Depends on compiler"],
+      correctAnswer: "int"
+    },
+    {
+      question: "What will be the output of the following code? int a = 10; printf(\"%d %d\", a++, ++a);",
+      options: ["10 11", "11 11", "Undefined behavior", "11 12"],
+      correctAnswer: "Undefined behavior"
+    },
+    {
+      question: "What is the output? char *p = \"Hello\"; printf(\"%c\", *&*p);",
+      options: ["H", "e", "p", "Error"],
+      correctAnswer: "H"
+    },
+    {
+      question: "Which one causes a segmentation fault? int *p; *p = 10;",
+      options: ["Always", "If memory not allocated", "Never", "Only on 32-bit systems"],
+      correctAnswer: "If memory not allocated"
+    },
+    {
+      question: "True/False: malloc() automatically initializes the allocated memory to zero.",
       options: ["True", "False"],
       correctAnswer: "False"
-    },
-    {
-      question: "Which loop is guaranteed to execute at least once?",
-      options: ["for", "while", "do-while", "if"],
-      correctAnswer: "do-while"
-    },
-    {
-      question: "What is the default return type of main() in C?",
-      options: ["void", "int", "char", "float"],
-      correctAnswer: "int"
     }
   ],
   "Data Structures using C": [
     {
-      question: "Which data structure uses FIFO?",
-      options: ["Stack", "Queue", "Tree", "Array"],
-      correctAnswer: "Queue"
+      question: "In which of the following operations does a stack overflow occur?",
+      options: ["When trying to pop from an empty stack", "When pushing into a full stack", "When accessing the top element", "When stack is initialized"],
+      correctAnswer: "When pushing into a full stack"
     },
     {
-      question: "True/False: Insertion in an array is faster than insertion in a linked list.",
+      question: "What is the time complexity of inserting an element at the beginning of a singly linked list?",
+      options: ["O(1)", "O(log n)", "O(n)", "O(n log n)"],
+      correctAnswer: "O(1)"
+    },
+    {
+      question: "In a circular queue, the condition front == rear means:",
+      options: ["The queue is empty", "The queue is full", "An error has occurred", "It depends on initialization"],
+      correctAnswer: "It depends on initialization"
+    },
+    {
+      question: "What is the maximum number of nodes in a binary tree of height h?",
+      options: ["2^h", "2^(h+1) - 1", "h", "2*h"],
+      correctAnswer: "2^(h+1) - 1"
+    },
+    {
+      question: "Which of the following sorting algorithms is not stable?",
+      options: ["Bubble sort", "Merge sort", "Insertion sort", "Quick sort"],
+      correctAnswer: "Quick sort"
+    },
+    {
+      question: "Which traversal method results in nodes being visited in sorted order for a BST?",
+      options: ["Pre-order", "Post-order", "In-order", "Level-order"],
+      correctAnswer: "In-order"
+    },
+    {
+      question: "What will be the output of the following code? int a[] = {10, 20, 30, 40}; printf(\"%d\", *(a + 2));",
+      options: ["10", "20", "30", "Garbage"],
+      correctAnswer: "30"
+    },
+    {
+      question: "Suppose you implement a stack using an array. What does the following condition indicate? if(top == SIZE - 1)",
+      options: ["Stack underflow", "Stack overflow", "Stack is empty", "Top element is about to be deleted"],
+      correctAnswer: "Stack overflow"
+    },
+    {
+      question: "What does this code segment do? struct node { int data; struct node *next; }; struct node *p = NULL; if (!p) printf(\"Empty\");",
+      options: ["Prints address", "Prints \"Empty\"", "Error", "Nothing"],
+      correctAnswer: "Prints \"Empty\""
+    },
+    {
+      question: "True/False: A doubly linked list requires less memory than a singly linked list.",
       options: ["True", "False"],
       correctAnswer: "False"
-    },
-    {
-      question: "What is the time complexity of binary search?",
-      options: ["O(n)", "O(log n)", "O(n^2)", "O(1)"],
-      correctAnswer: "O(log n)"
-    },
-    {
-      question: "Which traversal gives sorted output for BST?",
-      options: ["Preorder", "Postorder", "Inorder", "Level-order"],
-      correctAnswer: "Inorder"
-    },
-    {
-      question: "Which data structure uses LIFO?",
-      options: ["Queue", "Stack", "Tree", "Graph"],
-      correctAnswer: "Stack"
     }
   ],
   "DBMS": [
     {
-      question: "What is the full form of DBMS?",
-      options: ["Data Backup Management System", "Database Management System", "Data Business Machine System", "Direct Base Main Storage"],
-      correctAnswer: "Database Management System"
+      question: "Which of the following ensures referential integrity in a database?",
+      options: ["Primary key", "Foreign key", "Unique key", "Super key"],
+      correctAnswer: "Foreign key"
     },
     {
-      question: "Which SQL command is used to retrieve data?",
-      options: ["UPDATE", "SELECT", "DELETE", "INSERT"],
-      correctAnswer: "SELECT"
+      question: "Which SQL statement is used to revoke previously granted privileges?",
+      options: ["REMOVE", "GRANT", "DENY", "REVOKE"],
+      correctAnswer: "REVOKE"
     },
     {
-      question: "True/False: A primary key can be NULL.",
-      options: ["True", "False"],
-      correctAnswer: "False"
+      question: "In ACID properties, isolation refers to:",
+      options: ["Restricting unauthorized access", "Ensuring transactions do not interfere", "Saving all changes", "Recovering from failure"],
+      correctAnswer: "Ensuring transactions do not interfere"
     },
     {
-      question: "Which normal form removes partial dependency?",
+      question: "Which normal form eliminates transitive dependency?",
       options: ["1NF", "2NF", "3NF", "BCNF"],
-      correctAnswer: "2NF"
+      correctAnswer: "3NF"
     },
     {
-      question: "What is the difference between WHERE and HAVING clause?",
-      options: ["WHERE is used with GROUP BY, HAVING is not", "WHERE filters rows before grouping, HAVING filters groups after grouping", "No difference", "WHERE is faster than HAVING"],
-      correctAnswer: "WHERE filters rows before grouping, HAVING filters groups after grouping"
+      question: "Which of the following is not a DDL command?",
+      options: ["CREATE", "ALTER", "UPDATE", "DROP"],
+      correctAnswer: "UPDATE"
+    },
+    {
+      question: "Which type of join returns all rows from the left table and matched rows from the right table?",
+      options: ["INNER JOIN", "FULL JOIN", "LEFT JOIN", "RIGHT JOIN"],
+      correctAnswer: "LEFT JOIN"
+    },
+    {
+      question: "What will be the result of the following query? SELECT COUNT(*) FROM Students WHERE marks IS NULL;",
+      options: ["Count of all students", "Count of students with marks = 0", "Count of students with no marks entered", "Syntax error"],
+      correctAnswer: "Count of students with no marks entered"
+    },
+    {
+      question: "Consider the tables: Employee(EID, Name, DeptID), Department(DeptID, DeptName). Which query returns employee names with their department names?",
+      options: ["SELECT Name, DeptName FROM Employee, Department;", "SELECT Name, DeptName FROM Employee JOIN Department ON Employee.DeptID = Department.DeptID;", "SELECT Name FROM Employee;", "SELECT * FROM Employee FULL JOIN Department;"],
+      correctAnswer: "SELECT Name, DeptName FROM Employee JOIN Department ON Employee.DeptID = Department.DeptID;"
+    },
+    {
+      question: "What is the output of: SELECT 10 / 2 + 5 * 2;",
+      options: ["10", "20", "15", "25"],
+      correctAnswer: "15"
+    },
+    {
+      question: "True/False: A candidate key can have multiple attributes.",
+      options: ["True", "False"],
+      correctAnswer: "True"
     }
   ],
   "OOPs using C++": [
     {
-      question: "Which concept of OOP is used to hide data?",
-      options: ["Inheritance", "Polymorphism", "Encapsulation", "Abstraction"],
-      correctAnswer: "Encapsulation"
+      question: "Which concept allows different functions to have the same name with different arguments?",
+      options: ["Encapsulation", "Inheritance", "Polymorphism", "Overloading"],
+      correctAnswer: "Overloading"
     },
     {
-      question: "What is the correct syntax to create an object of class Car?",
-      options: ["Car obj();", "Car:obj;", "Car obj;", "new Car();"],
-      correctAnswer: "Car obj;"
+      question: "What happens when a constructor is declared private in a class?",
+      options: ["Object creation is not possible outside the class", "Destructor cannot be called", "It causes a compile-time error", "Only base class can access it"],
+      correctAnswer: "Object creation is not possible outside the class"
     },
     {
-      question: "True/False: A constructor has a return type.",
+      question: "Which of the following cannot be inherited in C++?",
+      options: ["Private members", "Public members", "Protected members", "Constructors"],
+      correctAnswer: "Constructors"
+    },
+    {
+      question: "What is early binding also known as?",
+      options: ["Static binding", "Runtime binding", "Late binding", "Dynamic dispatch"],
+      correctAnswer: "Static binding"
+    },
+    {
+      question: "Which operator must be overloaded as a member function?",
+      options: ["<<", "[]", "+", "=="],
+      correctAnswer: "[]"
+    },
+    {
+      question: "In multiple inheritance, if two base classes have a function with the same signature, what happens?",
+      options: ["Compile-time error", "Ambiguity occurs", "Calls both functions", "No error"],
+      correctAnswer: "Ambiguity occurs"
+    },
+    {
+      question: "What will be the output? class A { public: A() { cout << \"A\"; } }; class B : public A { public: B() { cout << \"B\"; } }; B obj;",
+      options: ["A", "AB", "BA", "Compilation Error"],
+      correctAnswer: "AB"
+    },
+    {
+      question: "What is the output? class Base { public: virtual void show() { cout << \"Base\"; } }; class Derived : public Base { public: void show() { cout << \"Derived\"; } }; Base *b = new Derived(); b->show();",
+      options: ["Base", "Derived", "Error", "BaseDerived"],
+      correctAnswer: "Derived"
+    },
+    {
+      question: "What does the following indicate? class A { public: A operator+(A a); };",
+      options: ["Syntax error", "Function overloading", "Operator overloading", "Virtual function"],
+      correctAnswer: "Operator overloading"
+    },
+    {
+      question: "True/False: A class in C++ can have multiple destructors.",
       options: ["True", "False"],
       correctAnswer: "False"
-    },
-    {
-      question: "Which OOP concept allows the same function name to act differently?",
-      options: ["Inheritance", "Abstraction", "Polymorphism", "Encapsulation"],
-      correctAnswer: "Polymorphism"
-    },
-    {
-      question: "What is the difference between public and private access specifiers?",
-      options: ["No difference", "Public members are accessible outside class, private are not", "Private members are accessible outside class, public are not", "Both are same"],
-      correctAnswer: "Public members are accessible outside class, private are not"
     }
   ],
   "Software Engineering": [
     {
-      question: "What does SDLC stand for?",
-      options: ["Software Development Life Cycle", "System Design Logic Control", "Software Design Level Code", "System Direct Logic Cycle"],
-      correctAnswer: "Software Development Life Cycle"
+      question: "In the Waterfall model, which phase comes immediately after requirements gathering?",
+      options: ["Maintenance", "Design", "Testing", "Coding"],
+      correctAnswer: "Design"
     },
     {
-      question: "True/False: Agile is a rigid, fixed-phase model.",
-      options: ["True", "False"],
-      correctAnswer: "False"
+      question: "Which of the following is not a software process model?",
+      options: ["Spiral", "V-Model", "Hybrid", "Machine Learning"],
+      correctAnswer: "Machine Learning"
     },
     {
-      question: "Which model uses prototyping?",
-      options: ["Waterfall", "Spiral", "V-Model", "Agile"],
+      question: "What is the main goal of software maintenance?",
+      options: ["To reduce memory", "To fix bugs and improve performance", "To test software", "To rewrite software from scratch"],
+      correctAnswer: "To fix bugs and improve performance"
+    },
+    {
+      question: "In Agile, the term \"sprint\" refers to:",
+      options: ["Full testing phase", "A fixed development timebox", "Project end date", "Error logging mechanism"],
+      correctAnswer: "A fixed development timebox"
+    },
+    {
+      question: "Which of the following is not a valid activity in Software Configuration Management (SCM)?",
+      options: ["Version control", "Risk analysis", "Change control", "Status reporting"],
+      correctAnswer: "Risk analysis"
+    },
+    {
+      question: "What is coupling in software design?",
+      options: ["Dependency between modules", "Complexity of algorithms", "Code indentation level", "Size of documentation"],
+      correctAnswer: "Dependency between modules"
+    },
+    {
+      question: "Which design principle supports reusability and minimal duplication?",
+      options: ["DRY (Don't Repeat Yourself)", "KISS (Keep it simple stupid)", "YAGNI (You aren't gonna need it)", "SOLID"],
+      correctAnswer: "DRY (Don't Repeat Yourself)"
+    },
+    {
+      question: "Which model is best suited for software with unclear or changing requirements?",
+      options: ["Waterfall", "V-Model", "Spiral", "Big Bang"],
       correctAnswer: "Spiral"
     },
     {
-      question: "What is the first phase of SDLC?",
-      options: ["Design", "Coding", "Requirements Analysis", "Testing"],
-      correctAnswer: "Requirements Analysis"
+      question: "What is the Cyclomatic Complexity of a function with 5 decision points?",
+      options: ["4", "5", "6", "7"],
+      correctAnswer: "6"
     },
     {
-      question: "Define functional requirement with an example.",
-      options: ["Performance requirements", "User interface requirements", "What the system should do - e.g., login functionality", "Hardware requirements"],
-      correctAnswer: "What the system should do - e.g., login functionality"
+      question: "True/False: A functional requirement describes how a system will do something rather than what it does.",
+      options: ["True", "False"],
+      correctAnswer: "False"
     }
   ],
   "Operating System": [
     {
-      question: "What is the role of the Operating System?",
-      options: ["Compiling Code", "Managing hardware and software", "Sending Emails", "Browsing"],
-      correctAnswer: "Managing hardware and software"
+      question: "Which of the following scheduling algorithms may lead to starvation?",
+      options: ["Round Robin", "FCFS", "Shortest Job First (SJF)", "Multilevel Queue"],
+      correctAnswer: "Shortest Job First (SJF)"
     },
     {
-      question: "What is a deadlock?",
-      options: ["A type of virus", "A situation where processes are blocked forever", "A hardware failure", "A programming error"],
-      correctAnswer: "A situation where processes are blocked forever"
+      question: "Which of the following is not a valid state of a process?",
+      options: ["New", "Running", "Waiting", "Compiling"],
+      correctAnswer: "Compiling"
     },
     {
-      question: "Which is not a type of OS?",
-      options: ["Batch", "Time-sharing", "Interactive", "Chrome"],
-      correctAnswer: "Chrome"
+      question: "What is the purpose of paging in OS?",
+      options: ["Increase security", "Manage CPU usage", "Provide virtual memory management", "Speed up network access"],
+      correctAnswer: "Provide virtual memory management"
     },
     {
-      question: "True/False: Round-robin is a type of process scheduling algorithm.",
+      question: "In a deadlock prevention strategy, which condition is typically denied?",
+      options: ["Mutual Exclusion", "Hold and Wait", "Circular Wait", "Preemption"],
+      correctAnswer: "Circular Wait"
+    },
+    {
+      question: "What is a context switch?",
+      options: ["Changing programming language", "Switching from user mode to kernel mode", "Saving and restoring state of a process", "Switching between two CPUs"],
+      correctAnswer: "Saving and restoring state of a process"
+    },
+    {
+      question: "Which of the following is true about thrashing?",
+      options: ["It improves system performance", "It occurs when there is excess CPU usage", "It happens when the system spends more time swapping than executing", "It is related to cache memory"],
+      correctAnswer: "It happens when the system spends more time swapping than executing"
+    },
+    {
+      question: "If a system has 3 processes sharing 4 instances of a resource R, and each process can request at most 2 instances, will the system be in safe state?",
+      options: ["Yes", "No", "Depends on initial allocation", "Can't be determined"],
+      correctAnswer: "Yes"
+    },
+    {
+      question: "Which command in Unix/Linux is used to list all running processes?",
+      options: ["cd", "top", "kill", "ls"],
+      correctAnswer: "top"
+    },
+    {
+      question: "Which of the following page replacement algorithms can suffer from Belady's anomaly?",
+      options: ["LRU", "Optimal", "FIFO", "LFU"],
+      correctAnswer: "FIFO"
+    },
+    {
+      question: "True/False: In preemptive scheduling, a running process can be interrupted and moved to ready state.",
       options: ["True", "False"],
       correctAnswer: "True"
-    },
-    {
-      question: "What is the kernel?",
-      options: ["A type of virus", "Core part of OS that manages system resources", "A programming language", "A type of hardware"],
-      correctAnswer: "Core part of OS that manages system resources"
     }
   ],
   "PHP": [
     {
-      question: "What does PHP stand for?",
-      options: ["Personal Home Page", "PHP: Hypertext Preprocessor", "Pre Hyper Processor", "Post HTML Parser"],
-      correctAnswer: "PHP: Hypertext Preprocessor"
+      question: "Which of the following is the correct way to define a constant in PHP?",
+      options: ["$CONSTANT = \"value\";", "const CONSTANT = \"value\";", "define(\"CONSTANT\", \"value\");", "Both b and c"],
+      correctAnswer: "Both b and c"
     },
     {
-      question: "What is the correct syntax to print in PHP?",
-      options: ["print(\"Hello\");", "echo(\"Hello\");", "println(\"Hello\");", "console.log(\"Hello\");"],
-      correctAnswer: "echo(\"Hello\");"
+      question: "What is the default method used for form submission if the method is not specified?",
+      options: ["GET", "POST", "PUT", "REQUEST"],
+      correctAnswer: "GET"
     },
     {
-      question: "True/False: PHP can interact with MySQL.",
+      question: "What does the isset() function check in PHP?",
+      options: ["Whether a variable is true", "Whether a variable is empty", "Whether a variable is declared and not null", "Whether a variable is false"],
+      correctAnswer: "Whether a variable is declared and not null"
+    },
+    {
+      question: "What is the output type of echo in PHP?",
+      options: ["String", "Void", "Boolean", "Integer"],
+      correctAnswer: "Void"
+    },
+    {
+      question: "Which superglobal holds cookie data in PHP?",
+      options: ["$_POST", "$_GET", "$_COOKIE", "$_SESSION"],
+      correctAnswer: "$_COOKIE"
+    },
+    {
+      question: "Which of the following is true about PHP variables?",
+      options: ["Variable names must start with a number", "Variables are case-insensitive", "Variables start with a $ sign", "PHP variables must be declared before use"],
+      correctAnswer: "Variables start with a $ sign"
+    },
+    {
+      question: "What will be the output of the following? $a = 5; $b = \"5\"; if ($a === $b) { echo \"Equal\"; } else { echo \"Not Equal\"; }",
+      options: ["Equal", "Not Equal", "Error", "5"],
+      correctAnswer: "Not Equal"
+    },
+    {
+      question: "What will be the output? $arr = array(1 => \"One\", 2 => \"Two\", 3 => \"Three\"); echo $arr[2];",
+      options: ["One", "Two", "Three", "Error"],
+      correctAnswer: "Two"
+    },
+    {
+      question: "What does the following code do? $x = NULL; var_dump(isset($x));",
+      options: ["true", "false", "NULL", "0"],
+      correctAnswer: "false"
+    },
+    {
+      question: "True/False: In PHP, variable names are case-sensitive.",
       options: ["True", "False"],
       correctAnswer: "True"
-    },
-    {
-      question: "What symbol is used to start a PHP variable?",
-      options: ["@", "#", "$", "%"],
-      correctAnswer: "$"
-    },
-    {
-      question: "Which of these is a server-side scripting language?",
-      options: ["PHP", "HTML", "CSS", "JavaScript"],
-      correctAnswer: "PHP"
     }
   ],
   "MySQL": [
     {
-      question: "Which command is used to create a database?",
-      options: ["MAKE DATABASE", "CREATE DATABASE", "NEW DATABASE", "INIT DATABASE"],
-      correctAnswer: "CREATE DATABASE"
+      question: "Which MySQL command is used to change the structure of an existing table?",
+      options: ["MODIFY", "UPDATE", "ALTER", "CHANGE"],
+      correctAnswer: "ALTER"
     },
     {
-      question: "True/False: MySQL is an open-source database.",
+      question: "Which data type is best for storing precise currency values?",
+      options: ["FLOAT", "INT", "DECIMAL", "DOUBLE"],
+      correctAnswer: "DECIMAL"
+    },
+    {
+      question: "What does the NOT NULL constraint do?",
+      options: ["Disallows duplicate values", "Disallows blank entries", "Disallows NULL entries", "Disallows zero"],
+      correctAnswer: "Disallows NULL entries"
+    },
+    {
+      question: "In MySQL, what does the AUTO_INCREMENT attribute do?",
+      options: ["Prevents NULL values", "Increases the column width", "Automatically increments the column value by 1", "Forces the column to be unique"],
+      correctAnswer: "Automatically increments the column value by 1"
+    },
+    {
+      question: "Which SQL clause is used to filter grouped results?",
+      options: ["WHERE", "GROUP BY", "HAVING", "ORDER BY"],
+      correctAnswer: "HAVING"
+    },
+    {
+      question: "Which of the following will give the current date and time in MySQL?",
+      options: ["CURRENT_DATE", "SYSDATE()", "CURDATE()", "NOW()"],
+      correctAnswer: "NOW()"
+    },
+    {
+      question: "What will be the output of this query? SELECT LENGTH(\"MySQL\") AS Length;",
+      options: ["5", "6", "MySQL", "Error"],
+      correctAnswer: "5"
+    },
+    {
+      question: "Consider the table students(name, score). What will this query return? SELECT AVG(score) FROM students;",
+      options: ["Highest score", "Sum of scores", "Mean score", "Score of first student"],
+      correctAnswer: "Mean score"
+    },
+    {
+      question: "What is the result of: SELECT 10 DIV 3;",
+      options: ["3", "3.33", "10.00", "1"],
+      correctAnswer: "3"
+    },
+    {
+      question: "True/False: The GROUP BY clause must always be used with aggregate functions.",
       options: ["True", "False"],
-      correctAnswer: "True"
-    },
-    {
-      question: "What is the function of JOIN in SQL?",
-      options: ["To delete records", "To combine rows from multiple tables", "To create tables", "To update records"],
-      correctAnswer: "To combine rows from multiple tables"
-    },
-    {
-      question: "What is the syntax to select all from a table named users?",
-      options: ["SELECT * FROM users;", "GET ALL FROM users;", "FETCH * FROM users;", "SHOW ALL users;"],
-      correctAnswer: "SELECT * FROM users;"
-    },
-    {
-      question: "What type of key uniquely identifies a record in a table?",
-      options: ["Foreign Key", "Primary Key", "Unique Key", "Composite Key"],
-      correctAnswer: "Primary Key"
+      correctAnswer: "False"
     }
   ],
   "Web Development": [
     {
-      question: "What does HTML stand for?",
-      options: ["HyperText Markup Language", "HighText Machine Language", "Hyperloop Text Machine Language", "None"],
-      correctAnswer: "HyperText Markup Language"
+      question: "Which of the following HTML elements is semantically correct for marking up navigation links?",
+      options: ["<nav>", "<div>", "<ul>", "<section>"],
+      correctAnswer: "<nav>"
     },
     {
-      question: "Which tag is used for inserting an image in HTML?",
-      options: ["<image>", "<img>", "<picture>", "<src>"],
-      correctAnswer: "<img>"
+      question: "In CSS, what does position: absolute; do?",
+      options: ["Positions relative to its own element", "Positions relative to the nearest non-static parent", "Fixes it at the bottom", "Makes it float"],
+      correctAnswer: "Positions relative to the nearest non-static parent"
     },
     {
-      question: "True/False: CSS is used to add style to HTML pages.",
+      question: "What HTTP status code indicates a redirect?",
+      options: ["200", "301", "404", "500"],
+      correctAnswer: "301"
+    },
+    {
+      question: "Which tag is used to link an external CSS file in HTML?",
+      options: ["<css>", "<link>", "<style>", "<script>"],
+      correctAnswer: "<link>"
+    },
+    {
+      question: "What does the defer attribute in a <script> tag do?",
+      options: ["Delays page load", "Loads the script after HTML parsing", "Prevents script execution", "Pauses DOM loading"],
+      correctAnswer: "Loads the script after HTML parsing"
+    },
+    {
+      question: "Which of the following is not a valid JavaScript data type?",
+      options: ["String", "Boolean", "Character", "Undefined"],
+      correctAnswer: "Character"
+    },
+    {
+      question: "What is the output of the following JavaScript? console.log(2 + '2');",
+      options: ["4", "22", "NaN", "Error"],
+      correctAnswer: "22"
+    },
+    {
+      question: "Consider this CSS: div { background-color: red; } .box { background-color: blue; } And HTML: <div class=\"box\"></div>. What is the background color of the div?",
+      options: ["Red", "Blue", "Error", "Transparent"],
+      correctAnswer: "Blue"
+    },
+    {
+      question: "Which of the following uses AJAX correctly?",
+      options: ["Submitting a form without page reload", "Redirecting to another page", "Styling a component dynamically", "Creating popups"],
+      correctAnswer: "Submitting a form without page reload"
+    },
+    {
+      question: "True/False: In HTML, the <div> tag is a semantic element.",
       options: ["True", "False"],
-      correctAnswer: "True"
-    },
-    {
-      question: "What does <a href=\"\"> do?",
-      options: ["Creates a link", "Inserts an image", "Creates a paragraph", "Makes text bold"],
-      correctAnswer: "Creates a link"
-    },
-    {
-      question: "Which HTML tag is used to make a form?",
-      options: ["<form>", "<input>", "<field>", "<data>"],
-      correctAnswer: "<form>"
+      correctAnswer: "False"
     }
   ],
   "Java": [
     {
-      question: "Java is:",
-      options: ["Compiled only", "Interpreted only", "Both compiled and interpreted", "None"],
-      correctAnswer: "Both compiled and interpreted"
+      question: "What is the default value of a boolean variable in Java?",
+      options: ["true", "false", "null", "0"],
+      correctAnswer: "false"
     },
     {
-      question: "What is JVM?",
-      options: ["Java Virtual Machine", "Java Variable Method", "Java Version Manager", "Java Visual Machine"],
-      correctAnswer: "Java Virtual Machine"
+      question: "Which of the following is true about Java?",
+      options: ["Java supports multiple inheritance using classes", "Java is platform dependent", "Java uses automatic garbage collection", "Java does not support multithreading"],
+      correctAnswer: "Java uses automatic garbage collection"
     },
     {
-      question: "True/False: In Java, everything is an object.",
+      question: "What is the output of System.out.println(10 + 20 + \"30\")?",
+      options: ["3030", "102030", "3030", "3030"],
+      correctAnswer: "3030"
+    },
+    {
+      question: "Which keyword is used to inherit a class in Java?",
+      options: ["inherits", "extend", "extends", "implements"],
+      correctAnswer: "extends"
+    },
+    {
+      question: "Which of the following is not a feature of Java?",
+      options: ["Object-oriented", "Platform independent", "Supports pointers", "Robust"],
+      correctAnswer: "Supports pointers"
+    },
+    {
+      question: "What is the size of an int in Java?",
+      options: ["2 bytes", "4 bytes", "8 bytes", "Depends on system"],
+      correctAnswer: "4 bytes"
+    },
+    {
+      question: "What will this code output? int x = 5; System.out.println(++x * 2);",
+      options: ["10", "12", "11", "14"],
+      correctAnswer: "12"
+    },
+    {
+      question: "What happens when an exception is not caught in Java?",
+      options: ["Compiles but skips the error", "The program terminates abnormally", "The exception is ignored", "The JVM automatically recovers"],
+      correctAnswer: "The program terminates abnormally"
+    },
+    {
+      question: "What is the output? String s1 = \"abc\"; String s2 = new String(\"abc\"); System.out.println(s1 == s2);",
+      options: ["true", "false", "Compile error", "NullPointerException"],
+      correctAnswer: "false"
+    },
+    {
+      question: "True/False: Java supports operator overloading like C++.",
       options: ["True", "False"],
       correctAnswer: "False"
-    },
-    {
-      question: "What is the default value of an int in Java?",
-      options: ["0", "1", "null", "undefined"],
-      correctAnswer: "0"
-    },
-    {
-      question: "What keyword is used to inherit a class in Java?",
-      options: ["inherits", "extends", "implements", "super"],
-      correctAnswer: "extends"
-    }
-  ],
-  "Quantitative Aptitude": [
-    {
-      question: "What is the smallest prime number?",
-      options: ["1", "2", "3", "5"],
-      correctAnswer: "2"
-    },
-    {
-      question: "Divide ₹60 between A and B in the ratio 2:1. What is B's share?",
-      options: ["₹10", "₹20", "₹30", "₹40"],
-      correctAnswer: "₹20"
-    },
-    {
-      question: "Find the LCM of 4 and 5.",
-      options: ["9", "10", "20", "15"],
-      correctAnswer: "20"
-    },
-    {
-      question: "What is the ratio of milk to water if a 30 L mixture contains 20 L milk?",
-      options: ["2:1", "1:2", "3:2", "1:3"],
-      correctAnswer: "2:1"
-    },
-    {
-      question: "If A can do a job in 5 days, how much work does A do in one day?",
-      options: ["1/2", "1/5", "1/10", "5"],
-      correctAnswer: "1/5"
-    },
-    {
-      question: "If x = 2, what is the value of 2x + 3?",
-      options: ["5", "6", "7", "8"],
-      correctAnswer: "7"
-    },
-    {
-      question: "Pipe A fills a tank in 6 hours. How much of the tank is filled in 2 hours?",
-      options: ["1/2", "1/3", "1/6", "2/3"],
-      correctAnswer: "1/3"
-    },
-    {
-      question: "Find the average of 2, 4, and 6.",
-      options: ["3", "4", "5", "6"],
-      correctAnswer: "4"
-    },
-    {
-      question: "A car covers 60 km in 2 hours. What is the speed?",
-      options: ["20 km/h", "30 km/h", "40 km/h", "60 km/h"],
-      correctAnswer: "30 km/h"
-    },
-    {
-      question: "Rahul is 10 years older than Amit. If Amit is 20, what is Rahul's age?",
-      options: ["25", "30", "20", "35"],
-      correctAnswer: "30"
-    },
-    {
-      question: "A boat goes 12 km downstream in 1 hour. What is the speed?",
-      options: ["10 km/h", "11 km/h", "12 km/h", "13 km/h"],
-      correctAnswer: "12 km/h"
-    },
-    {
-      question: "If a pen costs ₹20 and is sold at ₹25, what is the profit?",
-      options: ["₹5", "₹10", "₹15", "₹20"],
-      correctAnswer: "₹5"
-    },
-    {
-      question: "What is 25% of 80?",
-      options: ["10", "15", "20", "25"],
-      correctAnswer: "20"
-    },
-    {
-      question: "SI on ₹1000 at 5% for 2 years = ?",
-      options: ["₹50", "₹100", "₹150", "₹200"],
-      correctAnswer: "₹100"
-    },
-    {
-      question: "What is the probability of getting heads in a coin toss?",
-      options: ["0", "1", "1/2", "1/3"],
-      correctAnswer: "1/2"
-    },
-    {
-      question: "A triangle has sides 3 cm, 4 cm, and 5 cm. Is it a right triangle?",
-      options: ["Yes", "No"],
-      correctAnswer: "Yes"
-    },
-    {
-      question: "If 1st Jan is a Monday, what day is 8th Jan?",
-      options: ["Monday", "Tuesday", "Sunday", "Wednesday"],
-      correctAnswer: "Monday"
-    },
-    {
-      question: "If CAT = DBU, then DOG = ?",
-      options: ["EPH", "EQH", "DPH", "ERI"],
-      correctAnswer: "EPH"
-    },
-    {
-      question: "CI on ₹1000 at 10% for 1 year?",
-      options: ["₹100", "₹110", "₹105", "₹115"],
-      correctAnswer: "₹100"
-    },
-    {
-      question: "What is the value of (2 + 3) × 2?",
-      options: ["10", "8", "6", "12"],
-      correctAnswer: "10"
-    },
-    {
-      question: "Area of a rectangle (l = 5, b = 4)?",
-      options: ["10", "20", "25", "30"],
-      correctAnswer: "20"
-    },
-    {
-      question: "How many ways can you arrange A, B, and C?",
-      options: ["3", "4", "6", "9"],
-      correctAnswer: "6"
-    },
-    {
-      question: "Volume of cube with side 2 cm = ?",
-      options: ["4", "6", "8", "10"],
-      correctAnswer: "8"
-    },
-    {
-      question: "What is the angle between the hands of a clock at 3:00?",
-      options: ["30°", "45°", "90°", "60°"],
-      correctAnswer: "90°"
-    },
-    {
-      question: "If tan θ = 1, then θ = ?",
-      options: ["30°", "45°", "60°", "90°"],
-      correctAnswer: "45°"
-    },
-    {
-      question: "A runs at 5 km/h and B at 6 km/h. Who is faster?",
-      options: ["A", "B", "Both same", "Cannot determine"],
-      correctAnswer: "B"
-    },
-    {
-      question: "What is the 4th term of 2, 4, 6, ...?",
-      options: ["6", "8", "10", "12"],
-      correctAnswer: "8"
-    },
-    {
-      question: "log₁₀10 = ?",
-      options: ["0", "1", "2", "10"],
-      correctAnswer: "1"
-    }
-  ],
-  "Logical Ability": [
-    {
-      question: "All cats are animals. Some animals are dogs. Can some cats be dogs?",
-      options: ["Yes", "No", "Can't say"],
-      correctAnswer: "No"
-    },
-    {
-      question: "What comes next: 2, 4, 6, 8, __?",
-      options: ["9", "10", "12", "14"],
-      correctAnswer: "10"
-    },
-    {
-      question: "A is north of B. B is east of C. In which direction is A from C?",
-      options: ["North-East", "North-West", "South-East", "South-West"],
-      correctAnswer: "North-East"
-    },
-    {
-      question: "Find the odd one: Apple, Banana, Tomato, Carrot",
-      options: ["Apple", "Tomato", "Carrot", "Banana"],
-      correctAnswer: "Carrot"
-    },
-    {
-      question: "If marks > 40 and attendance > 75%, then eligible. Rahul has 45 marks and 80% attendance. Is he eligible?",
-      options: ["Yes", "No"],
-      correctAnswer: "Yes"
-    },
-    {
-      question: "A, B, C are sitting in a row. A is left of B and right of C. Who is in the middle?",
-      options: ["A", "B", "C", "Can't say"],
-      correctAnswer: "A"
-    },
-    {
-      question: "What comes next: 5, 10, 15, __?",
-      options: ["18", "20", "25", "30"],
-      correctAnswer: "20"
-    },
-    {
-      question: "Arrange: infant, teenager, child, adult",
-      options: ["Infant, Child, Teenager, Adult", "Child, Infant, Teenager, Adult", "Infant, Teenager, Child, Adult", "Adult, Teenager, Child, Infant"],
-      correctAnswer: "Infant, Child, Teenager, Adult"
-    },
-    {
-      question: "Pen : Write :: Knife : ?",
-      options: ["Cut", "Eat", "Fight", "Chop"],
-      correctAnswer: "Cut"
-    },
-    {
-      question: "Is A older than B? 1) A is older than C. 2) C is older than B.",
-      options: ["Only 1", "Only 2", "Both", "Either"],
-      correctAnswer: "Both"
-    },
-    {
-      question: "Complete the series: 1, 1, 2, 3, 5, __?",
-      options: ["7", "8", "9", "10"],
-      correctAnswer: "8"
-    }
-  ],
-  "Verbal Ability": [
-    {
-      question: "Choose the correct sentence:",
-      options: ["She don't like coffee", "She doesn't like coffee", "She not like coffee", "She no like coffee"],
-      correctAnswer: "She doesn't like coffee"
-    },
-    {
-      question: "He ___ to school daily.",
-      options: ["go", "goes", "going", "gone"],
-      correctAnswer: "goes"
-    },
-    {
-      question: "Where does the sun rise?",
-      options: ["West", "North", "South", "East"],
-      correctAnswer: "East"
-    },
-    {
-      question: "Synonym of 'happy'?",
-      options: ["Sad", "Joyful", "Angry", "Tired"],
-      correctAnswer: "Joyful"
-    },
-    {
-      question: "I ___ a movie yesterday.",
-      options: ["watch", "watched", "watching", "watches"],
-      correctAnswer: "watched"
-    },
-    {
-      question: "It ___ raining since morning.",
-      options: ["has been", "have been", "is", "was"],
-      correctAnswer: "has been"
-    },
-    {
-      question: "Hot : Cold :: Tall : ?",
-      options: ["Short", "Thin", "Long", "Huge"],
-      correctAnswer: "Short"
-    },
-    {
-      question: "Arrange: 1. goes 2. to school 3. She",
-      options: ["She goes to school", "Goes she to school", "To school she goes", "School goes she to"],
-      correctAnswer: "She goes to school"
-    },
-    {
-      question: "Choose the correct sentence:",
-      options: ["He is a good boy", "He are a good boy", "He am a good boy", "He be a good boy"],
-      correctAnswer: "He is a good boy"
-    },
-    {
-      question: "Synonym of 'fast'?",
-      options: ["Slow", "Quick", "Late", "Stop"],
-      correctAnswer: "Quick"
-    },
-    {
-      question: "___ is my best friend.",
-      options: ["He", "His", "Him", "Her"],
-      correctAnswer: "He"
-    },
-    {
-      question: "Identify the verb: She sings well.",
-      options: ["She", "sings", "well", "none"],
-      correctAnswer: "sings"
-    },
-    {
-      question: "She ___ to school.",
-      options: ["go", "goes", "going", "gone"],
-      correctAnswer: "goes"
-    },
-    {
-      question: "He ran ___ fast.",
-      options: ["very", "many", "too", "so"],
-      correctAnswer: "very"
-    },
-    {
-      question: "The book is ___ the table.",
-      options: ["on", "in", "at", "to"],
-      correctAnswer: "on"
-    },
-    {
-      question: "She is ___ honest girl.",
-      options: ["a", "an", "the", "no article"],
-      correctAnswer: "an"
-    },
-    {
-      question: "I wanted to go, ___ I was tired.",
-      options: ["but", "and", "because", "so"],
-      correctAnswer: "but"
-    },
-    {
-      question: "The past tense of 'run' is:",
-      options: ["ran", "run", "running", "runs"],
-      correctAnswer: "ran"
-    }
-  ],
-  "Basic Coding": [
-    {
-      question: "Java Q1: Print Even Numbers from 1 to 10. Write a Java program to print all even numbers from 1 to 10. Expected Output: 2 4 6 8 10",
-      options: [],
-      type: "coding"
-    },
-    {
-      question: "Java Q2: Check Positive or Negative Number. Write a Java program to check whether a number is positive, negative, or zero. Hint: Use if-else condition.",
-      options: [],
-      type: "coding"
-    },
-    {
-      question: "Python Q1: Sum of List Elements. Write a Python program to calculate the sum of elements in a list. Example: list = [2, 4, 6]. Expected Output: 12",
-      options: [],
-      type: "coding"
-    },
-    {
-      question: "Python Q2: Check if Number is Prime. Write a Python program to check if a number entered by the user is a prime number.",
-      options: [],
-      type: "coding"
-    },
-    {
-      question: "SQL Q1: Select All Records. Write an SQL query to display all records from the table named 'students'.",
-      options: [],
-      type: "coding"
-    },
-    {
-      question: "SQL Q2: Count Rows in a Table. Write an SQL query to count the number of rows in the 'orders' table.",
-      options: [],
-      type: "coding"
     }
   ]
 };
