@@ -4,7 +4,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { CodingTextarea } from '@/components/ui/coding-textarea';
-import { CheckCircle, User, Award, Clock, Download, FileText, Share2 } from 'lucide-react';
+import { CheckCircle, User, Award, Clock, Download, FileText, Share2, AlertTriangle } from 'lucide-react';
 import { quizData, correctAnswers } from '@/data/quizData';
 import { useToast } from '@/hooks/use-toast';
 import jsPDF from 'jspdf';
@@ -29,6 +29,8 @@ const Index = () => {
   const [startTime, setStartTime] = useState<Date | null>(null);
   const [showAnswerChecker, setShowAnswerChecker] = useState(false);
   const [quizId, setQuizId] = useState<string>('');
+  const [tabSwitchWarning, setTabSwitchWarning] = useState(false);
+  const [hasReceivedWarning, setHasReceivedWarning] = useState(false);
   const { toast } = useToast();
 
   // Generate or get quiz ID from URL
@@ -46,6 +48,75 @@ const Index = () => {
       setQuizId(currentQuizId);
     }
   }, []);
+
+  // Tab switching and focus detection
+  useEffect(() => {
+    if (!quizStarted || showResults) return;
+
+    const handleVisibilityChange = () => {
+      if (document.hidden) {
+        if (!hasReceivedWarning) {
+          setHasReceivedWarning(true);
+          setTabSwitchWarning(true);
+          toast({
+            title: "⚠️ Warning: Tab Switch Detected",
+            description: "You switched tabs during the quiz. This is your only warning. Next time, the quiz will be auto-submitted.",
+            variant: "destructive",
+            duration: 8000
+          });
+          
+          // Hide warning after 5 seconds
+          setTimeout(() => {
+            setTabSwitchWarning(false);
+          }, 5000);
+        } else {
+          // Auto-submit on second violation
+          toast({
+            title: "Quiz Auto-Submitted",
+            description: "You switched tabs again. The quiz has been automatically submitted due to suspicious activity.",
+            variant: "destructive",
+            duration: 10000
+          });
+          handleAutoSubmit();
+        }
+      }
+    };
+
+    const handleBlur = () => {
+      if (!hasReceivedWarning) {
+        setHasReceivedWarning(true);
+        setTabSwitchWarning(true);
+        toast({
+          title: "⚠️ Warning: Application Switch Detected",
+          description: "You switched to another application during the quiz. This is your only warning. Next time, the quiz will be auto-submitted.",
+          variant: "destructive",
+          duration: 8000
+        });
+        
+        // Hide warning after 5 seconds
+        setTimeout(() => {
+          setTabSwitchWarning(false);
+        }, 5000);
+      } else {
+        // Auto-submit on second violation
+        toast({
+          title: "Quiz Auto-Submitted",
+          description: "You switched applications again. The quiz has been automatically submitted due to suspicious activity.",
+          variant: "destructive",
+          duration: 10000
+        });
+        handleAutoSubmit();
+      }
+    };
+
+    document.addEventListener('visibilitychange', handleVisibilityChange);
+    window.addEventListener('blur', handleBlur);
+
+    return () => {
+      document.removeEventListener('visibilitychange', handleVisibilityChange);
+      window.removeEventListener('blur', handleBlur);
+    };
+  }, [quizStarted, showResults, hasReceivedWarning]);
 
   // Load responses from localStorage and URL sharing
   useEffect(() => {
@@ -150,6 +221,8 @@ const Index = () => {
     setQuizStarted(true);
     setStartTime(new Date());
     setTimeRemaining(180 * 60);
+    setHasReceivedWarning(false);
+    setTabSwitchWarning(false);
   };
 
   const handleAnswerSelect = (questionIndex: number, answer: string) => {
@@ -256,6 +329,8 @@ const Index = () => {
     setQuizStarted(false);
     setTimeRemaining(180 * 60);
     setStartTime(null);
+    setHasReceivedWarning(false);
+    setTabSwitchWarning(false);
   };
 
   const exportResponses = () => {
@@ -553,6 +628,21 @@ const Index = () => {
     return (
       <div className="min-h-screen bg-gradient-to-br from-purple-50 to-pink-100 p-6 select-none">
         <div className="max-w-4xl mx-auto">
+          {/* Tab Switch Warning */}
+          {tabSwitchWarning && (
+            <div className="fixed top-4 left-1/2 transform -translate-x-1/2 z-50 max-w-md">
+              <div className="bg-red-500 text-white p-4 rounded-lg shadow-lg border-2 border-red-600 animate-pulse">
+                <div className="flex items-center gap-2">
+                  <AlertTriangle className="h-5 w-5" />
+                  <span className="font-bold">⚠️ WARNING</span>
+                </div>
+                <p className="text-sm mt-2">
+                  Tab switching detected! This is your only warning. Next violation will auto-submit the quiz.
+                </p>
+              </div>
+            </div>
+          )}
+
           <div className="mb-6">
             <div className="flex justify-between items-center mb-4">
               <h1 className="text-2xl font-bold text-gray-800">Quiz - {studentName}</h1>
@@ -725,6 +815,7 @@ const Index = () => {
                   <li>• For coding questions, write your answer in the text area provided</li>
                   <li>• Copy-paste is disabled for coding questions to ensure authenticity</li>
                   <li>• Your responses are automatically shared and can be viewed by the teacher</li>
+                  <li>• <strong>⚠️ DO NOT switch tabs or applications during the quiz - you will get ONE warning, then auto-submission</strong></li>
                 </ul>
               </div>
             </CardContent>
