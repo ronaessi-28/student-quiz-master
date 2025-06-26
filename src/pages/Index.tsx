@@ -102,7 +102,7 @@ const Index = () => {
     questions.map(question => ({ 
       ...question, 
       subject,
-      type: (question.type || 'multiple-choice') as 'multiple-choice' | 'coding'
+      type: (question.type as 'multiple-choice' | 'coding') || 'multiple-choice'
     }))
   );
 
@@ -348,9 +348,11 @@ const Index = () => {
       pdf.setFont('helvetica', 'normal');
       pdf.setTextColor(0, 0, 0);
       
+      // Fix the type comparison issue by properly casting the type
       const questionType = question.type as 'multiple-choice' | 'coding';
+      const isCodingQuestion = questionType === 'coding';
       
-      if (questionType === 'coding') {
+      if (isCodingQuestion) {
         pdf.text('Your Code Answer:', 20, yPosition);
         yPosition += 6;
         pdf.setFont('courier', 'normal');
@@ -370,7 +372,7 @@ const Index = () => {
         yPosition += 8;
         
         // Show correct answer if wrong
-        if (!isCorrect && questionType !== 'coding') {
+        if (!isCorrect && !isCodingQuestion) {
           pdf.setTextColor(0, 128, 0); // Green
           pdf.text('✓ Correct Answer: ' + correctAnswer, 20, yPosition);
           yPosition += 8;
@@ -469,7 +471,7 @@ const Index = () => {
                     <div className="space-y-4">
                       {Object.entries(response.answers).map(([questionIndex, answer]) => {
                         const question = allQuestions[parseInt(questionIndex)];
-                        const questionType = question.type as 'multiple-choice' | 'coding';
+                        const questionType = (question.type as 'multiple-choice' | 'coding') || 'multiple-choice';
                         return (
                           <div key={questionIndex} className="border-l-4 border-blue-500 pl-4">
                             <p className="font-medium text-gray-800 mb-2">
@@ -575,7 +577,7 @@ const Index = () => {
             <CardContent className="p-8 select-none">
               <div className="space-y-8">
                 {allQuestions.map((question, questionIndex) => {
-                  const questionType = question.type as 'multiple-choice' | 'coding';
+                  const questionType = (question.type as 'multiple-choice' | 'coding') || 'multiple-choice';
                   return (
                     <div key={questionIndex} className="border-b border-gray-200 pb-6 last:border-b-0 select-none">
                       <div className="flex justify-between items-start mb-4">
