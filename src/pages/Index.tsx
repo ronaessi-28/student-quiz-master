@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -102,7 +103,7 @@ const Index = () => {
     questions.map(question => ({ 
       ...question, 
       subject,
-      type: question.type || 'multiple-choice' as const
+      type: (question.type || 'multiple-choice') as 'multiple-choice' | 'coding'
     }))
   );
 
@@ -272,7 +273,7 @@ const Index = () => {
   const clearAllResponses = () => {
     if (confirm('Are you sure you want to clear all responses? This action cannot be undone.')) {
       setAllResponses([]);
-      localStorage.removeItem('quizResponses');
+      localStorage.removeItem(`quizResponses_${quizId}`);
       toast({
         title: "Responses Cleared",
         description: "All quiz responses have been cleared.",
