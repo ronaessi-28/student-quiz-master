@@ -4,8 +4,8 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { CodingTextarea } from '@/components/ui/coding-textarea';
-import { CheckCircle, User, Award, Clock, Download, FileText } from 'lucide-react';
-import { quizData } from '@/data/quizData';
+import { CheckCircle, User, Award, Clock, Download, FileText, Share2 } from 'lucide-react';
+import { quizData, correctAnswers } from '@/data/quizData';
 import { useToast } from '@/hooks/use-toast';
 import jsPDF from 'jspdf';
 import AnswerChecker from '@/components/AnswerChecker';
@@ -28,15 +28,33 @@ const Index = () => {
   const [timeRemaining, setTimeRemaining] = useState(180 * 60);
   const [startTime, setStartTime] = useState<Date | null>(null);
   const [showAnswerChecker, setShowAnswerChecker] = useState(false);
+  const [quizId, setQuizId] = useState<string>('');
   const { toast } = useToast();
 
-  // Load responses from localStorage on component mount
+  // Generate or get quiz ID from URL
   useEffect(() => {
-    const savedResponses = localStorage.getItem('quizResponses');
+    const urlParams = new URLSearchParams(window.location.search);
+    let currentQuizId = urlParams.get('quiz');
+    
+    if (!currentQuizId) {
+      currentQuizId = 'quiz_' + Date.now().toString();
+      setQuizId(currentQuizId);
+      // Update URL without refreshing
+      const newUrl = `${window.location.pathname}?quiz=${currentQuizId}`;
+      window.history.replaceState({}, '', newUrl);
+    } else {
+      setQuizId(currentQuizId);
+    }
+  }, []);
+
+  // Load responses from localStorage and URL sharing
+  useEffect(() => {
+    if (!quizId) return;
+
+    const savedResponses = localStorage.getItem(`quizResponses_${quizId}`);
     if (savedResponses) {
       try {
         const parsed = JSON.parse(savedResponses);
-        // Convert date strings back to Date objects
         const responsesWithDates = parsed.map((response: any) => ({
           ...response,
           completedAt: new Date(response.completedAt)
@@ -46,14 +64,38 @@ const Index = () => {
         console.error('Error parsing saved responses:', error);
       }
     }
-  }, []);
+
+    // Check for shared response in URL
+    const urlParams = new URLSearchParams(window.location.search);
+    const sharedResponse = urlParams.get('response');
+    if (sharedResponse) {
+      try {
+        const decoded = JSON.parse(decodeURIComponent(sharedResponse));
+        const responseWithDate = {
+          ...decoded,
+          completedAt: new Date(decoded.completedAt)
+        };
+        setAllResponses(prev => {
+          const exists = prev.find(r => r.id === responseWithDate.id);
+          if (!exists) {
+            const updated = [...prev, responseWithDate];
+            localStorage.setItem(`quizResponses_${quizId}`, JSON.stringify(updated));
+            return updated;
+          }
+          return prev;
+        });
+      } catch (error) {
+        console.error('Error parsing shared response:', error);
+      }
+    }
+  }, [quizId]);
 
   // Save responses to localStorage whenever allResponses changes
   useEffect(() => {
-    if (allResponses.length > 0) {
-      localStorage.setItem('quizResponses', JSON.stringify(allResponses));
+    if (allResponses.length > 0 && quizId) {
+      localStorage.setItem(`quizResponses_${quizId}`, JSON.stringify(allResponses));
     }
-  }, [allResponses]);
+  }, [allResponses, quizId]);
 
   // Flatten all questions from all subjects into one array
   const allQuestions = Object.entries(quizData).flatMap(([subject, questions]) => 
@@ -134,6 +176,9 @@ const Index = () => {
     setShowResults(true);
     setQuizStarted(false);
     
+    // Share response via URL
+    shareResponse(response);
+    
     toast({
       title: "Time's Up!",
       description: "Your quiz has been automatically submitted and saved.",
@@ -158,10 +203,50 @@ const Index = () => {
     setShowResults(true);
     setQuizStarted(false);
     
+    // Share response via URL
+    shareResponse(response);
+    
     toast({
       title: "Quiz Submitted!",
       description: "Your responses have been recorded and saved successfully.",
     });
+  };
+
+  const shareResponse = (response: StudentResponse) => {
+    const responseData = encodeURIComponent(JSON.stringify(response));
+    const shareUrl = `${window.location.origin}${window.location.pathname}?quiz=${quizId}&response=${responseData}`;
+    
+    // Open in new tab to share the response
+    window.open(shareUrl, '_blank');
+  };
+
+  const getShareableUrl = () => {
+    return `${window.location.origin}${window.location.pathname}?quiz=${quizId}`;
+  };
+
+  const copyShareLink = () => {
+    navigator.clipboard.writeText(getShareableUrl());
+    toast({
+      title: "Link Copied!",
+      description: "Share this link with students to collect their responses.",
+    });
+  };
+
+  const getCorrectAnswer = (questionIndex: number, subject: string): string => {
+    const subjectAnswers = correctAnswers[subject];
+    if (!subjectAnswers) return "Answer not available";
+    
+    const subjectQuestions = allQuestions.filter(q => q.subject === subject);
+    const questionInSubject = allQuestions[questionIndex];
+    const indexInSubject = subjectQuestions.findIndex(q => q.question === questionInSubject.question);
+    
+    return subjectAnswers[indexInSubject] || "Answer not available";
+  };
+
+  const isAnswerCorrect = (questionIndex: number, userAnswer: string): boolean => {
+    const question = allQuestions[questionIndex];
+    const correctAnswer = getCorrectAnswer(questionIndex, question.subject);
+    return userAnswer === correctAnswer;
   };
 
   const resetQuiz = () => {
@@ -198,64 +283,100 @@ const Index = () => {
   const exportResponsesAsPDF = (response: StudentResponse) => {
     const pdf = new jsPDF();
     const pageHeight = pdf.internal.pageSize.height;
+    const pageWidth = pdf.internal.pageSize.width;
     let yPosition = 20;
     
     // Title
-    pdf.setFontSize(16);
+    pdf.setFontSize(18);
     pdf.setFont('helvetica', 'bold');
     pdf.text('Quiz Response Report', 20, yPosition);
-    yPosition += 20;
+    yPosition += 25;
     
     // Student info
     pdf.setFontSize(12);
     pdf.setFont('helvetica', 'normal');
     pdf.text(`Student Name: ${response.studentName}`, 20, yPosition);
-    yPosition += 10;
+    yPosition += 8;
     pdf.text(`Completed: ${response.completedAt.toLocaleString()}`, 20, yPosition);
-    yPosition += 10;
+    yPosition += 8;
     pdf.text(`Time Spent: ${formatTime(response.timeSpent)}`, 20, yPosition);
-    yPosition += 10;
+    yPosition += 8;
     pdf.text(`Questions Answered: ${Object.keys(response.answers).length}/${allQuestions.length}`, 20, yPosition);
+    yPosition += 15;
+    
+    // Calculate score
+    const answeredQuestions = Object.keys(response.answers);
+    const correctCount = answeredQuestions.filter(key => 
+      isAnswerCorrect(parseInt(key), response.answers[parseInt(key)])
+    ).length;
+    const percentage = answeredQuestions.length > 0 ? Math.round((correctCount / answeredQuestions.length) * 100) : 0;
+    
+    pdf.setFont('helvetica', 'bold');
+    pdf.text(`Score: ${correctCount}/${answeredQuestions.length} (${percentage}%)`, 20, yPosition);
     yPosition += 20;
     
     // Questions and answers
-    pdf.setFontSize(10);
-    Object.entries(response.answers).forEach(([questionIndex, answer]) => {
-      const question = allQuestions[parseInt(questionIndex)];
+    Object.entries(response.answers).forEach(([questionIndex, userAnswer]) => {
+      const qIndex = parseInt(questionIndex);
+      const question = allQuestions[qIndex];
+      const correctAnswer = getCorrectAnswer(qIndex, question.subject);
+      const isCorrect = isAnswerCorrect(qIndex, userAnswer);
       
       // Check if we need a new page
-      if (yPosition > pageHeight - 60) {
+      if (yPosition > pageHeight - 80) {
         pdf.addPage();
         yPosition = 20;
       }
       
-      // Question
+      // Question number and text
+      pdf.setFontSize(12);
       pdf.setFont('helvetica', 'bold');
-      const questionText = `Q${parseInt(questionIndex) + 1}: ${question.question}`;
-      const questionLines = pdf.splitTextToSize(questionText, 170);
+      const questionText = `Q${qIndex + 1}: ${question.question}`;
+      const questionLines = pdf.splitTextToSize(questionText, pageWidth - 40);
       pdf.text(questionLines, 20, yPosition);
-      yPosition += questionLines.length * 5 + 5;
+      yPosition += questionLines.length * 6 + 5;
       
       // Subject
+      pdf.setFontSize(10);
       pdf.setFont('helvetica', 'italic');
+      pdf.setTextColor(100, 100, 100);
       pdf.text(`Subject: ${question.subject}`, 20, yPosition);
-      yPosition += 8;
+      yPosition += 10;
       
-      // Answer
+      // User's Answer
+      pdf.setFontSize(11);
       pdf.setFont('helvetica', 'normal');
+      pdf.setTextColor(0, 0, 0);
+      
       if (question.type === 'coding') {
-        pdf.text('Code Answer:', 20, yPosition);
-        yPosition += 5;
-        const codeLines = pdf.splitTextToSize(answer, 170);
+        pdf.text('Your Code Answer:', 20, yPosition);
+        yPosition += 6;
         pdf.setFont('courier', 'normal');
-        pdf.text(codeLines, 20, yPosition);
-        yPosition += codeLines.length * 4 + 10;
+        pdf.setFontSize(9);
+        const codeLines = pdf.splitTextToSize(userAnswer, pageWidth - 40);
+        pdf.text(codeLines, 25, yPosition);
+        yPosition += codeLines.length * 4 + 8;
       } else {
-        pdf.text(`Answer: ${answer}`, 20, yPosition);
-        yPosition += 10;
+        // Show user answer with color coding
+        if (isCorrect) {
+          pdf.setTextColor(0, 128, 0); // Green
+          pdf.text('✓ Your Answer: ' + userAnswer, 20, yPosition);
+        } else {
+          pdf.setTextColor(255, 0, 0); // Red
+          pdf.text('✗ Your Answer: ' + userAnswer, 20, yPosition);
+        }
+        yPosition += 8;
+        
+        // Show correct answer if wrong
+        if (!isCorrect && question.type !== 'coding') {
+          pdf.setTextColor(0, 128, 0); // Green
+          pdf.text('✓ Correct Answer: ' + correctAnswer, 20, yPosition);
+          yPosition += 8;
+        }
       }
       
-      yPosition += 5;
+      pdf.setTextColor(0, 0, 0); // Reset to black
+      yPosition += 10;
     });
     
     // Save the PDF
@@ -269,6 +390,10 @@ const Index = () => {
           <div className="flex justify-between items-center mb-8">
             <h1 className="text-3xl font-bold text-gray-800">Student Responses ({allResponses.length})</h1>
             <div className="flex gap-3">
+              <Button onClick={copyShareLink} variant="outline" className="flex items-center gap-2">
+                <Share2 className="h-4 w-4" />
+                Copy Share Link
+              </Button>
               {allResponses.length > 0 && (
                 <>
                   <Button onClick={exportResponses} variant="outline" className="flex items-center gap-2">
@@ -290,7 +415,11 @@ const Index = () => {
             <Card>
               <CardContent className="text-center py-12">
                 <p className="text-gray-500 mb-4">No responses yet. Share the quiz link with students to start collecting responses.</p>
-                <p className="text-sm text-gray-400">Quiz URL: {window.location.href}</p>
+                <p className="text-sm text-gray-400 mb-4">Quiz URL: {getShareableUrl()}</p>
+                <Button onClick={copyShareLink} className="flex items-center gap-2 mx-auto">
+                  <Share2 className="h-4 w-4" />
+                  Copy Share Link
+                </Button>
               </CardContent>
             </Card>
           ) : (
@@ -555,9 +684,15 @@ const Index = () => {
         <div className="mb-8">
           <div className="flex justify-between items-center mb-6">
             <h2 className="text-2xl font-bold text-gray-800">Quiz Overview</h2>
-            <Button onClick={() => setIsTeacherView(true)} variant="outline">
-              Teacher View ({allResponses.length} responses)
-            </Button>
+            <div className="flex gap-3">
+              <Button onClick={copyShareLink} variant="outline" className="flex items-center gap-2">
+                <Share2 className="h-4 w-4" />
+                Share Quiz
+              </Button>
+              <Button onClick={() => setIsTeacherView(true)} variant="outline">
+                Teacher View ({allResponses.length} responses)
+              </Button>
+            </div>
           </div>
           
           <Card className="shadow-lg">
@@ -581,7 +716,7 @@ const Index = () => {
                   <li>• The quiz will auto-submit when time runs out</li>
                   <li>• For coding questions, write your answer in the text area provided</li>
                   <li>• Copy-paste is disabled for coding questions to ensure authenticity</li>
-                  <li>• Your responses are automatically saved and can be viewed by the teacher</li>
+                  <li>• Your responses are automatically shared and can be viewed by the teacher</li>
                 </ul>
               </div>
             </CardContent>
