@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -349,7 +348,9 @@ const Index = () => {
       pdf.setFont('helvetica', 'normal');
       pdf.setTextColor(0, 0, 0);
       
-      if (question.type === 'coding') {
+      const questionType = question.type as 'multiple-choice' | 'coding';
+      
+      if (questionType === 'coding') {
         pdf.text('Your Code Answer:', 20, yPosition);
         yPosition += 6;
         pdf.setFont('courier', 'normal');
@@ -369,7 +370,7 @@ const Index = () => {
         yPosition += 8;
         
         // Show correct answer if wrong
-        if (!isCorrect && question.type !== 'coding') {
+        if (!isCorrect && questionType !== 'coding') {
           pdf.setTextColor(0, 128, 0); // Green
           pdf.text('✓ Correct Answer: ' + correctAnswer, 20, yPosition);
           yPosition += 8;
@@ -468,12 +469,13 @@ const Index = () => {
                     <div className="space-y-4">
                       {Object.entries(response.answers).map(([questionIndex, answer]) => {
                         const question = allQuestions[parseInt(questionIndex)];
+                        const questionType = question.type as 'multiple-choice' | 'coding';
                         return (
                           <div key={questionIndex} className="border-l-4 border-blue-500 pl-4">
                             <p className="font-medium text-gray-800 mb-2">
                               Q{parseInt(questionIndex) + 1}: {question.question}
                             </p>
-                            {question.type === 'coding' ? (
+                            {questionType === 'coding' ? (
                               <div className="bg-gray-100 p-3 rounded">
                                 <p className="text-sm text-gray-600 mb-2">Code Answer:</p>
                                 <pre className="text-blue-600 font-mono text-sm whitespace-pre-wrap">{answer}</pre>
@@ -572,48 +574,51 @@ const Index = () => {
             </CardHeader>
             <CardContent className="p-8 select-none">
               <div className="space-y-8">
-                {allQuestions.map((question, questionIndex) => (
-                  <div key={questionIndex} className="border-b border-gray-200 pb-6 last:border-b-0 select-none">
-                    <div className="flex justify-between items-start mb-4">
-                      <h3 className="text-lg font-semibold text-gray-800 select-none">
-                        Q{questionIndex + 1}: {question.question}
-                      </h3>
-                      <span className="text-sm bg-blue-100 text-blue-800 px-2 py-1 rounded select-none">
-                        {question.subject}
-                      </span>
-                    </div>
-                    
-                    {question.type === 'coding' ? (
-                      <div className="space-y-3">
-                        <label className="block text-sm font-medium text-gray-700 select-none">
-                          Write your code here:
-                        </label>
-                        <CodingTextarea
-                          placeholder="Enter your code here... (Paste is disabled for coding questions)"
-                          value={answers[questionIndex] || ''}
-                          onChange={(e) => handleAnswerSelect(questionIndex, e.target.value)}
-                          className="min-h-[200px] font-mono text-sm"
-                        />
+                {allQuestions.map((question, questionIndex) => {
+                  const questionType = question.type as 'multiple-choice' | 'coding';
+                  return (
+                    <div key={questionIndex} className="border-b border-gray-200 pb-6 last:border-b-0 select-none">
+                      <div className="flex justify-between items-start mb-4">
+                        <h3 className="text-lg font-semibold text-gray-800 select-none">
+                          Q{questionIndex + 1}: {question.question}
+                        </h3>
+                        <span className="text-sm bg-blue-100 text-blue-800 px-2 py-1 rounded select-none">
+                          {question.subject}
+                        </span>
                       </div>
-                    ) : (
-                      <div className="space-y-3">
-                        {question.options.map((option, optionIndex) => (
-                          <label key={optionIndex} className="flex items-center p-3 border-2 border-gray-200 rounded-lg hover:border-purple-300 cursor-pointer transition-colors select-none">
-                            <input
-                              type="radio"
-                              name={`question-${questionIndex}`}
-                              value={option}
-                              checked={answers[questionIndex] === option}
-                              onChange={(e) => handleAnswerSelect(questionIndex, e.target.value)}
-                              className="mr-3 h-4 w-4 text-purple-600"
-                            />
-                            <span className="text-gray-700 select-none">{option}</span>
+                      
+                      {questionType === 'coding' ? (
+                        <div className="space-y-3">
+                          <label className="block text-sm font-medium text-gray-700 select-none">
+                            Write your code here:
                           </label>
-                        ))}
-                      </div>
-                    )}
-                  </div>
-                ))}
+                          <CodingTextarea
+                            placeholder="Enter your code here... (Paste is disabled for coding questions)"
+                            value={answers[questionIndex] || ''}
+                            onChange={(e) => handleAnswerSelect(questionIndex, e.target.value)}
+                            className="min-h-[200px] font-mono text-sm"
+                          />
+                        </div>
+                      ) : (
+                        <div className="space-y-3">
+                          {question.options.map((option, optionIndex) => (
+                            <label key={optionIndex} className="flex items-center p-3 border-2 border-gray-200 rounded-lg hover:border-purple-300 cursor-pointer transition-colors select-none">
+                              <input
+                                type="radio"
+                                name={`question-${questionIndex}`}
+                                value={option}
+                                checked={answers[questionIndex] === option}
+                                onChange={(e) => handleAnswerSelect(questionIndex, e.target.value)}
+                                className="mr-3 h-4 w-4 text-purple-600"
+                              />
+                              <span className="text-gray-700 select-none">{option}</span>
+                            </label>
+                          ))}
+                        </div>
+                      )}
+                    </div>
+                  );
+                })}
               </div>
 
               <div className="flex justify-between mt-8 pt-6 border-t border-gray-200">
