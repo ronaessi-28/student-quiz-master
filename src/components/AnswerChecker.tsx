@@ -43,16 +43,18 @@ const AnswerChecker: React.FC<AnswerCheckerProps> = ({
     return userAnswer === correctAnswer;
   };
 
-  const calculateScore = (): { correct: number; total: number; percentage: number } => {
+  const calculateScore = (): { correct: number; answered: number; total: number; percentage: number } => {
     const answeredQuestions = Object.keys(userAnswers).length;
     const correctCount = Object.keys(userAnswers).filter(key => 
       isCorrect(parseInt(key))
     ).length;
+    const totalQuestions = questions.length;
     
     return {
       correct: correctCount,
-      total: answeredQuestions,
-      percentage: answeredQuestions > 0 ? Math.round((correctCount / answeredQuestions) * 100) : 0
+      answered: answeredQuestions,
+      total: totalQuestions,
+      percentage: totalQuestions > 0 ? Math.round((correctCount / totalQuestions) * 100) : 0
     };
   };
 
@@ -78,19 +80,29 @@ const AnswerChecker: React.FC<AnswerCheckerProps> = ({
             </CardTitle>
           </CardHeader>
           <CardContent className="p-6">
-            <div className="grid grid-cols-3 gap-4 text-center">
+            <div className="grid grid-cols-4 gap-4 text-center">
               <div>
                 <p className="text-2xl font-bold text-green-600">{score.correct}</p>
                 <p className="text-gray-600">Correct</p>
               </div>
               <div>
-                <p className="text-2xl font-bold text-red-600">{score.total - score.correct}</p>
+                <p className="text-2xl font-bold text-red-600">{score.answered - score.correct}</p>
                 <p className="text-gray-600">Incorrect</p>
               </div>
               <div>
-                <p className="text-2xl font-bold text-blue-600">{score.percentage}%</p>
-                <p className="text-gray-600">Score</p>
+                <p className="text-2xl font-bold text-gray-600">{score.total - score.answered}</p>
+                <p className="text-gray-600">Unanswered</p>
               </div>
+              <div>
+                <p className="text-2xl font-bold text-blue-600">{score.percentage}%</p>
+                <p className="text-gray-600">Overall Score</p>
+              </div>
+            </div>
+            <div className="mt-4 text-center text-gray-600">
+              <p className="text-sm">
+                {score.correct} correct out of {score.total} total questions 
+                ({score.answered} answered, {score.total - score.answered} unanswered)
+              </p>
             </div>
           </CardContent>
         </Card>
