@@ -57,7 +57,11 @@ const Index = () => {
 
   // Flatten all questions from all subjects into one array
   const allQuestions = Object.entries(quizData).flatMap(([subject, questions]) => 
-    questions.map(question => ({ ...question, subject }))
+    questions.map(question => ({ 
+      ...question, 
+      subject,
+      type: question.type || 'multiple-choice' as const
+    }))
   );
 
   // Timer effect
@@ -304,15 +308,30 @@ const Index = () => {
                           Completed: {response.completedAt.toLocaleString()} | Time Spent: {formatTime(response.timeSpent)} | Questions Answered: {Object.keys(response.answers).length}/{allQuestions.length}
                         </p>
                       </div>
-                      <Button 
-                        onClick={() => exportResponsesAsPDF(response)}
-                        variant="secondary"
-                        size="sm"
-                        className="bg-white/20 hover:bg-white/30 text-white border-white/30"
-                      >
-                        <FileText className="h-4 w-4 mr-2" />
-                        Export PDF
-                      </Button>
+                      <div className="flex gap-2">
+                        <Button 
+                          onClick={() => {
+                            setStudentName(response.studentName);
+                            setAnswers(response.answers);
+                            setShowAnswerChecker(true);
+                            setIsTeacherView(false);
+                          }}
+                          variant="secondary"
+                          size="sm"
+                          className="bg-white/20 hover:bg-white/30 text-white border-white/30"
+                        >
+                          Check Answers
+                        </Button>
+                        <Button 
+                          onClick={() => exportResponsesAsPDF(response)}
+                          variant="secondary"
+                          size="sm"
+                          className="bg-white/20 hover:bg-white/30 text-white border-white/30"
+                        >
+                          <FileText className="h-4 w-4 mr-2" />
+                          Export PDF
+                        </Button>
+                      </div>
                     </div>
                   </CardHeader>
                   <CardContent className="p-6">
