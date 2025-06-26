@@ -777,7 +777,7 @@ export const quizData: QuizData = {
     },
     {
       question: "Seed, Tree, Plant, Fruit, Flower",
-      options: ["Seed, Plant, Tree, Flower, Fruit", "Seed, Plant, Flower, Tree, Fruit", "Seed, Plant, Tree, Fruit, Flower", "Plant, Seed, Tree, Fruit, Flower"],
+      options: ["Seed, Plant, Tree, Flower, Fruit", "Seed, Plant, Flower, Tree, Fruit", "Seed, Plant, Tree, Flower, Fruit", "Plant, Seed, Tree, Fruit, Flower"],
       correctAnswer: "Seed, Plant, Tree, Flower, Fruit"
     },
     {
@@ -959,5 +959,155 @@ export const quizData: QuizData = {
       options: [],
       type: "coding"
     }
+  ]
+};
+
+// Add correct answers for each subject
+export const correctAnswers: Record<string, string[]> = {
+  "Computer Networks": [
+    "Transport Layer", // Q1
+    "If the frame is too long", // Q2
+    "Prevent routing loops", // Q3
+    "TCP", // Q4
+    "172.16.0.1", // Q5
+    "Convert IP to MAC", // Q6
+    "Server must bind the socket", // Q7
+    "netstat -r", // Q8
+    "Number of hops remaining", // Q9
+    "False" // Q10
+  ],
+  "C Language": [
+    "Syntax error", // Q1
+    "dynamic", // Q2
+    "Function scope, global lifetime", // Q3
+    "11", // Q4
+    "4", // Q5
+    "int", // Q6
+    "Undefined behavior", // Q7
+    "H", // Q8
+    "If memory not allocated", // Q9
+    "False" // Q10
+  ],
+  "Data Structures Using C": [
+    "When pushing into a full stack", // Q1
+    "O(1)", // Q2
+    "It depends on initialization", // Q3
+    "2^(h+1) - 1", // Q4
+    "Quick sort", // Q5
+    "In-order", // Q6
+    "30", // Q7
+    "Stack overflow", // Q8
+    "Prints \"Empty\"", // Q9
+    "False" // Q10
+  ],
+  "DBMS": [
+    "Foreign key", // Q1
+    "REVOKE", // Q2
+    "Ensuring transactions do not interfere", // Q3
+    "3NF", // Q4
+    "UPDATE", // Q5
+    "LEFT JOIN", // Q6
+    "Count of students with no marks entered", // Q7
+    "SELECT Name, DeptName FROM Employee JOIN Department ON Employee.DeptID = Department.DeptID;", // Q8
+    "15", // Q9
+    "True" // Q10
+  ],
+  "OOPs Using C++": [
+    "Overloading", // Q1
+    "Object creation is not possible outside the class", // Q2
+    "Constructors", // Q3
+    "Static binding", // Q4
+    "[]", // Q5
+    "Ambiguity occurs", // Q6
+    "AB", // Q7
+    "Derived", // Q8
+    "Operator overloading", // Q9
+    "False" // Q10
+  ],
+  "Software Engineering": [
+    "Design", // Q1
+    "Machine Learning", // Q2
+    "To fix bugs and improve performance", // Q3
+    "A fixed development timebox", // Q4
+    "Risk analysis", // Q5
+    "Dependency between modules", // Q6
+    "DRY (Don't Repeat Yourself)", // Q7
+    "Spiral", // Q8
+    "6", // Q9
+    "False" // Q10
+  ],
+  "Operating System": [
+    "Shortest Job First (SJF)", // Q1
+    "Compiling", // Q2
+    "Provide virtual memory management", // Q3
+    "Circular Wait", // Q4
+    "Saving and restoring state of a process", // Q5
+    "It happens when the system spends more time swapping than executing", // Q6
+    "Yes", // Q7
+    "top", // Q8
+    "FIFO", // Q9
+    "True" // Q10
+  ],
+  "PHP": [
+    "Both b and c", // Q1
+    "GET", // Q2
+    "Whether a variable is declared and not null", // Q3
+    "Void", // Q4
+    "$_COOKIE", // Q5
+    "Variables start with a $ sign", // Q6
+    "Not Equal", // Q7
+    "Two", // Q8
+    "false", // Q9
+    "True" // Q10
+  ],
+  "MySQL": [
+    "ALTER", // Q1
+    "DECIMAL", // Q2
+    "Disallows NULL entries", // Q3
+    "Automatically increments the column value by 1", // Q4
+    "HAVING", // Q5
+    "NOW()", // Q6
+    "5", // Q7
+    "Mean score", // Q8
+    "3", // Q9
+    "False" // Q10
+  ],
+  "Web Development": [
+    "<nav>", // Q1
+    "Positions relative to the nearest non-static parent", // Q2
+    "301", // Q3
+    "<link>", // Q4
+    "Loads the script after HTML parsing", // Q5
+    "Character", // Q6
+    "22", // Q7
+    "Blue", // Q8
+    "Submitting a form without page reload", // Q9
+    "False" // Q10
+  ],
+  "Java": [
+    "false", // Q1
+    "Java uses automatic garbage collection", // Q2
+    "3030", // Q3
+    "extends", // Q4
+    "Supports pointers", // Q5
+    "4 bytes", // Q6
+    "12", // Q7
+    "The program terminates abnormally", // Q8
+    "false", // Q9
+    "False" // Q10
+  ],
+  "Quantitative Aptitude": [
+    "184", "48", "1/6", "24 min", "150 m", "1 km/hr", "16.67%", "1/3", "Thursday", "₹1680",
+    "25.67 cm²", "12π cm³", "60√3 m", "63", "₹14000", "3:2", "x = 2 or 3", "31", "35", "₹200",
+    "6%", "75°", "VBCDUG", "46", "120", "75°", "160 m", "4", "Thursday", "4/13", "4% loss"
+  ],
+  "Logical Ability": [
+    "No conclusion", "42", "North-East", "14", "Fail", "D", "25", "Seed, Plant, Tree, Flower, Fruit",
+    "Glove", "Both", "Bottle", "South", "Cannot be determined"
+  ],
+  "Verbal Ability": [
+    "doesn't know", "rises", "Informative", "Environmental Awareness", "stayed", "Puppy", "B-A-D-C",
+    "Graceful", "He goes", "Intelligent", "will have completed", "his", "singing", "is", "fast",
+    "in", "an", "although", "Cowardly", "Achievement", "I wrote the letter", "She said that she was tired."
   ]
 };

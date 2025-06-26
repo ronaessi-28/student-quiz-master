@@ -8,6 +8,7 @@ import { CheckCircle, User, Award, Clock, Download, FileText } from 'lucide-reac
 import { quizData } from '@/data/quizData';
 import { useToast } from '@/hooks/use-toast';
 import jsPDF from 'jspdf';
+import AnswerChecker from '@/components/AnswerChecker';
 
 interface StudentResponse {
   studentName: string;
@@ -26,6 +27,7 @@ const Index = () => {
   const [quizStarted, setQuizStarted] = useState(false);
   const [timeRemaining, setTimeRemaining] = useState(180 * 60);
   const [startTime, setStartTime] = useState<Date | null>(null);
+  const [showAnswerChecker, setShowAnswerChecker] = useState(false);
   const { toast } = useToast();
 
   // Load responses from localStorage on component mount
@@ -345,6 +347,17 @@ const Index = () => {
     );
   }
 
+  if (showAnswerChecker) {
+    return (
+      <AnswerChecker
+        questions={allQuestions}
+        userAnswers={answers}
+        studentName={studentName}
+        onBack={() => setShowAnswerChecker(false)}
+      />
+    );
+  }
+
   if (showResults) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-green-50 to-emerald-100 flex items-center justify-center p-6">
@@ -363,7 +376,13 @@ const Index = () => {
             <p className="text-gray-600 mb-8">
               You have successfully completed the quiz with {Object.keys(answers).length} out of {allQuestions.length} questions answered. Your responses have been submitted and saved.
             </p>
-            <div className="flex gap-4 justify-center">
+            <div className="flex gap-4 justify-center flex-wrap">
+              <Button 
+                onClick={() => setShowAnswerChecker(true)} 
+                className="bg-purple-600 hover:bg-purple-700"
+              >
+                Check Answers
+              </Button>
               <Button onClick={resetQuiz} className="bg-blue-600 hover:bg-blue-700">
                 Take Quiz Again
               </Button>
