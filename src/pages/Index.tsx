@@ -1,4 +1,5 @@
 
+
 import React, { useState, useEffect, useRef } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
@@ -6,12 +7,11 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { useAuth } from '@/contexts/AuthContext';
 import { useToast } from '@/hooks/use-toast';
 import { ArrowLeft, Timer, BookOpen, Brain, Code, AlertTriangle } from 'lucide-react';
-import { quizData } from '@/data/quizData';
 
 const Index: React.FC = () => {
   const { type } = useParams<{ type: 'theory' | 'aptitude' | 'coding' }>();
   const navigate = useNavigate();
-  const { currentUser, addQuizAttempt } = useAuth();
+  const { currentUser, addQuizAttempt, quizzes } = useAuth();
   const { toast } = useToast();
   
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
@@ -20,32 +20,17 @@ const Index: React.FC = () => {
   const [isSubmitted, setIsSubmitted] = useState(false);
   const [warningCount, setWarningCount] = useState(0);
   const [isQuizActive, setIsQuizActive] = useState(true);
+  const [currentQuiz, setCurrentQuiz] = useState<any>(null);
 
   const visibilityRef = useRef(true);
 
-  const getQuizQuestions = () => {
-    if (!type || !Array.isArray(quizData)) return [];
-    
-    switch (type) {
-      case 'theory':
-        return quizData.slice(0, 110); // Questions 1-110
-      case 'aptitude':
-        return quizData.slice(110, 176); // Questions 111-176
-      case 'coding':
-        return quizData.slice(176, 184); // Questions 177-184
-      default:
-        return [];
-    }
-  };
-
-  const questions = getQuizQuestions();
-  const currentQuestion = questions[currentQuestionIndex];
-
   const handleSubmit = () => {
-    if (!isQuizActive) return;
+    if (!isQuizActive || !currentQuiz) return;
 
     let correctAnswers = 0;
-    questions.forEach((question, index) => {
+    const questions = currentQuiz.questions;
+    
+    questions.forEach((question: any, index: number) => {
       if (question.type === 'multiple-choice' && answers[index] === question.correctAnswer) {
         correctAnswers++;
       } else if (question.type === 'coding' && answers[index]) {
@@ -57,7 +42,7 @@ const Index: React.FC = () => {
     const quizAttempt = {
       id: `attempt-${Date.now()}`,
       userId: currentUser?.id || '',
-      quizId: `${type}-quiz`,
+      quizId: currentQuiz.id,
       quizType: type!,
       score: correctAnswers,
       totalQuestions: questions.length,
@@ -79,6 +64,17 @@ const Index: React.FC = () => {
     if (!currentUser || currentUser.role !== 'student') {
       navigate('/');
       return;
+    }
+
+    // Find the appropriate quiz based on type
+    const availableQuiz = quizzes.find(quiz => 
+      quiz.type === type && 
+      quiz.assignedTo.includes(currentUser.id) && 
+      quiz.status === 'active'
+    );
+
+    if (availableQuiz) {
+      setCurrentQuiz(availableQuiz);
     }
 
     const handleVisibilityChange = () => {
@@ -114,7 +110,7 @@ const Index: React.FC = () => {
       document.removeEventListener("visibilitychange", handleVisibilityChange);
       clearInterval(timerId);
     };
-  }, [navigate, currentUser, warningCount, toast]);
+  }, [navigate, currentUser, warningCount, toast, type, quizzes]);
 
   useEffect(() => {
     if (timeLeft <= 0) {
@@ -131,6 +127,26 @@ const Index: React.FC = () => {
     navigate('/');
     return null;
   }
+
+  if (!currentQuiz) {
+    return (
+      <div className="min-h-screen bg-gray-50 p-6">
+        <div className="max-w-4xl mx-auto">
+          <Card>
+            <CardContent className="text-center py-12">
+              <p className="text-gray-600 mb-4">No active quiz available for this type.</p>
+              <Button onClick={() => navigate('/')}>
+                Back to Dashboard
+              </Button>
+            </CardContent>
+          </Card>
+        </div>
+      </div>
+    );
+  }
+
+  const questions = currentQuiz.questions;
+  const currentQuestion = questions[currentQuestionIndex];
 
   const getQuizIcon = () => {
     switch (type) {
@@ -197,28 +213,9 @@ const Index: React.FC = () => {
               </p>
               <div className="space-y-2">
                 <p className="text-sm text-gray-500">Quiz Type: <span className="font-medium capitalize">{type}</span></p>
-                <p className="text-sm text-gray-500">
-                  Questions Range: {type === 'theory' ? '1-110' : type === 'aptitude' ? '111-176' : '177-184'}
-                </p>
+                <p className="text-sm text-gray-500">Quiz: {currentQuiz.title}</p>
               </div>
               <Button onClick={() => navigate('/')} className="mt-6">
-                Back to Dashboard
-              </Button>
-            </CardContent>
-          </Card>
-        </div>
-      </div>
-    );
-  }
-
-  if (!questions.length) {
-    return (
-      <div className="min-h-screen bg-gray-50 p-6">
-        <div className="max-w-4xl mx-auto">
-          <Card>
-            <CardContent className="text-center py-12">
-              <p className="text-gray-600 mb-4">No questions available for this quiz type.</p>
-              <Button onClick={() => navigate('/')}>
                 Back to Dashboard
               </Button>
             </CardContent>
@@ -244,7 +241,7 @@ const Index: React.FC = () => {
           <div className="flex items-center gap-4">
             <div className="flex items-center gap-2 text-sm text-gray-600">
               {getQuizIcon()}
-              <span className="font-medium">{getQuizTitle()}</span>
+              <span className="font-medium">{currentQuiz.title}</span>
             </div>
             <div className="flex items-center gap-2 text-sm text-gray-600">
               <Timer className="h-4 w-4" />
@@ -262,7 +259,7 @@ const Index: React.FC = () => {
                 Question {currentQuestionIndex + 1} of {questions.length}
               </CardTitle>
               <div className="text-sm text-gray-500">
-                Range: {type === 'theory' ? '1-110' : type === 'aptitude' ? '111-176' : '177-184'}
+                Quiz: {currentQuiz.title}
               </div>
             </div>
             <div className="w-full bg-gray-200 rounded-full h-2">
@@ -336,7 +333,7 @@ const Index: React.FC = () => {
         </Card>
 
         <div className="mt-6 grid grid-cols-10 gap-2">
-          {questions.map((_, index) => (
+          {questions.map((_: any, index: number) => (
             <button
               key={index}
               onClick={() => setCurrentQuestionIndex(index)}
@@ -358,3 +355,4 @@ const Index: React.FC = () => {
 };
 
 export default Index;
+
