@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect, useRef } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
@@ -23,7 +24,7 @@ const Index: React.FC = () => {
   const visibilityRef = useRef(true);
 
   const getQuizQuestions = () => {
-    if (!type) return [];
+    if (!type || !Array.isArray(quizData)) return [];
     
     switch (type) {
       case 'theory':
