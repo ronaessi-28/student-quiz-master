@@ -31,6 +31,8 @@ const Index = () => {
   const [quizId, setQuizId] = useState<string>('');
   const [tabSwitchWarning, setTabSwitchWarning] = useState(false);
   const [hasReceivedWarning, setHasReceivedWarning] = useState(false);
+  const [dailyAttempts, setDailyAttempts] = useState(0);
+  const [maxDailyAttempts] = useState(5);
   const { toast } = useToast();
 
   // Generate or get quiz ID from URL
@@ -48,6 +50,21 @@ const Index = () => {
       setQuizId(currentQuizId);
     }
   }, []);
+
+  // Track daily attempts
+  useEffect(() => {
+    if (!quizId) return;
+
+    const today = new Date().toISOString().split('T')[0];
+    const attemptKey = `dailyAttempts_${quizId}_${today}`;
+    const savedAttempts = localStorage.getItem(attemptKey);
+    
+    if (savedAttempts) {
+      setDailyAttempts(parseInt(savedAttempts));
+    } else {
+      setDailyAttempts(0);
+    }
+  }, [quizId]);
 
   // Tab switching and focus detection
   useEffect(() => {
@@ -207,6 +224,15 @@ const Index = () => {
     return `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
   };
 
+  const incrementDailyAttempts = () => {
+    const today = new Date().toISOString().split('T')[0];
+    const attemptKey = `dailyAttempts_${quizId}_${today}`;
+    const newAttemptCount = dailyAttempts + 1;
+    
+    localStorage.setItem(attemptKey, newAttemptCount.toString());
+    setDailyAttempts(newAttemptCount);
+  };
+
   const handleStartQuiz = () => {
     if (!studentName.trim()) {
       toast({
@@ -216,6 +242,17 @@ const Index = () => {
       });
       return;
     }
+
+    if (dailyAttempts >= maxDailyAttempts) {
+      toast({
+        title: "Daily Limit Reached",
+        description: `You have reached the maximum of ${maxDailyAttempts} quiz attempts for today. Please try again tomorrow.`,
+        variant: "destructive"
+      });
+      return;
+    }
+
+    incrementDailyAttempts();
     setAnswers({});
     setShowResults(false);
     setQuizStarted(true);
@@ -331,6 +368,7 @@ const Index = () => {
     setStartTime(null);
     setHasReceivedWarning(false);
     setTabSwitchWarning(false);
+    // Don't reset daily attempts when resetting quiz
   };
 
   const exportResponses = () => {
@@ -741,6 +779,16 @@ const Index = () => {
           <h1 className="text-4xl font-bold text-gray-800 mb-4">Student Quiz Portal</h1>
           <p className="text-xl text-gray-600">Complete the quiz with {allQuestions.length} questions from various subjects</p>
           <p className="text-lg text-purple-600 mt-2">⏰ Time Limit: 180 minutes (3 hours)</p>
+          <div className="mt-2 flex justify-center items-center gap-4">
+            <p className="text-lg text-orange-600">
+              📝 Daily Attempts: {dailyAttempts}/{maxDailyAttempts}
+            </p>
+            {dailyAttempts >= maxDailyAttempts && (
+              <p className="text-red-600 font-semibold">
+                ❌ Daily limit reached - Try again tomorrow
+              </p>
+            )}
+          </div>
         </div>
 
         <Card className="mb-8 shadow-lg">
@@ -761,6 +809,7 @@ const Index = () => {
                 value={studentName}
                 onChange={(e) => setStudentName(e.target.value)}
                 className="text-center text-lg"
+                disabled={dailyAttempts >= maxDailyAttempts}
                 onKeyDown={(e) => {
                   if (e.key === 'Enter') {
                     e.preventDefault();
@@ -771,10 +820,18 @@ const Index = () => {
               <Button 
                 onClick={handleStartQuiz}
                 className="w-full bg-indigo-600 hover:bg-indigo-700"
-                disabled={!studentName.trim()}
+                disabled={!studentName.trim() || dailyAttempts >= maxDailyAttempts}
               >
-                Start Quiz ({allQuestions.length} Questions)
+                {dailyAttempts >= maxDailyAttempts 
+                  ? `Daily Limit Reached (${maxDailyAttempts}/5)`
+                  : `Start Quiz (${allQuestions.length} Questions)`
+                }
               </Button>
+              {dailyAttempts > 0 && dailyAttempts < maxDailyAttempts && (
+                <p className="text-center text-sm text-gray-600">
+                  You have {maxDailyAttempts - dailyAttempts} attempts remaining today
+                </p>
+              )}
             </div>
           </CardContent>
         </Card>
@@ -809,6 +866,7 @@ const Index = () => {
                 <h4 className="font-semibold text-yellow-800 mb-2">Instructions:</h4>
                 <ul className="text-sm text-yellow-700 space-y-1">
                   <li>• You have 180 minutes (3 hours) to complete the quiz</li>
+                  <li>• <strong>Maximum 5 attempts per day allowed</strong></li>
                   <li>• It's not mandatory to answer all questions</li>
                   <li>• You can submit the quiz anytime before the timer ends</li>
                   <li>• The quiz will auto-submit when time runs out</li>
