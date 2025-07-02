@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -327,7 +326,7 @@ const TeacherDashboard: React.FC = () => {
                           </div>
                           <div className="text-right">
                             <span className="font-bold">
-                              {Math-round((attempt.score / attempt.totalQuestions) * 100)}%
+                              {Math.round((attempt.score / attempt.totalQuestions) * 100)}%
                             </span>
                             <p className="text-sm text-gray-500">
                               {attempt.score}/{attempt.totalQuestions}

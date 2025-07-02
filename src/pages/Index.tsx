@@ -22,6 +22,58 @@ const Index: React.FC = () => {
 
   const visibilityRef = useRef(true);
 
+  const getQuizQuestions = () => {
+    if (!type) return [];
+    
+    switch (type) {
+      case 'theory':
+        return quizData.slice(0, 110); // Questions 1-110
+      case 'aptitude':
+        return quizData.slice(110, 176); // Questions 111-176
+      case 'coding':
+        return quizData.slice(176, 184); // Questions 177-184
+      default:
+        return [];
+    }
+  };
+
+  const questions = getQuizQuestions();
+  const currentQuestion = questions[currentQuestionIndex];
+
+  const handleSubmit = () => {
+    if (!isQuizActive) return;
+
+    let correctAnswers = 0;
+    questions.forEach((question, index) => {
+      if (question.type === 'multiple-choice' && answers[index] === question.correctAnswer) {
+        correctAnswers++;
+      } else if (question.type === 'coding' && answers[index]) {
+        // For coding questions, we'll assume they're correct if answered
+        correctAnswers++;
+      }
+    });
+
+    const quizAttempt = {
+      id: `attempt-${Date.now()}`,
+      userId: currentUser?.id || '',
+      quizId: `${type}-quiz`,
+      quizType: type!,
+      score: correctAnswers,
+      totalQuestions: questions.length,
+      completedAt: new Date().toISOString(),
+      answers: answers
+    };
+
+    addQuizAttempt(quizAttempt);
+    setIsSubmitted(true);
+    setIsQuizActive(false);
+
+    toast({
+      title: "Quiz Submitted!",
+      description: `You scored ${correctAnswers}/${questions.length} (${Math.round((correctAnswers/questions.length)*100)}%)`
+    });
+  };
+
   useEffect(() => {
     if (!currentUser || currentUser.role !== 'student') {
       navigate('/');
@@ -61,7 +113,7 @@ const Index: React.FC = () => {
       document.removeEventListener("visibilitychange", handleVisibilityChange);
       clearInterval(timerId);
     };
-  }, [navigate, currentUser, warningCount, toast, handleSubmit]);
+  }, [navigate, currentUser, warningCount, toast]);
 
   useEffect(() => {
     if (timeLeft <= 0) {
@@ -72,30 +124,12 @@ const Index: React.FC = () => {
         variant: "destructive"
       });
     }
-  }, [timeLeft, handleSubmit, toast]);
+  }, [timeLeft, toast]);
 
   if (!currentUser || currentUser.role !== 'student') {
     navigate('/');
     return null;
   }
-
-  const getQuizQuestions = () => {
-    if (!type) return [];
-    
-    switch (type) {
-      case 'theory':
-        return quizData.slice(0, 110); // Questions 1-110
-      case 'aptitude':
-        return quizData.slice(110, 176); // Questions 111-176
-      case 'coding':
-        return quizData.slice(176, 184); // Questions 177-184
-      default:
-        return [];
-    }
-  };
-
-  const questions = getQuizQuestions();
-  const currentQuestion = questions[currentQuestionIndex];
 
   const getQuizIcon = () => {
     switch (type) {
@@ -134,40 +168,6 @@ const Index: React.FC = () => {
   const handlePreviousQuestion = () => {
     if (!isQuizActive) return;
     setCurrentQuestionIndex(currentQuestionIndex - 1);
-  };
-
-  const handleSubmit = () => {
-    if (!isQuizActive) return;
-
-    let correctAnswers = 0;
-    questions.forEach((question, index) => {
-      if (question.type === 'multiple-choice' && answers[index] === question.correctAnswer) {
-        correctAnswers++;
-      } else if (question.type === 'coding' && answers[index]) {
-        // For coding questions, we'll assume they're correct if answered
-        correctAnswers++;
-      }
-    });
-
-    const quizAttempt = {
-      id: `attempt-${Date.now()}`,
-      userId: currentUser.id,
-      quizId: `${type}-quiz`,
-      quizType: type!,
-      score: correctAnswers,
-      totalQuestions: questions.length,
-      completedAt: new Date().toISOString(),
-      answers: answers
-    };
-
-    addQuizAttempt(quizAttempt);
-    setIsSubmitted(true);
-    setIsQuizActive(false);
-
-    toast({
-      title: "Quiz Submitted!",
-      description: `You scored ${correctAnswers}/${questions.length} (${Math.round((correctAnswers/questions.length)*100)}%)`
-    });
   };
 
   if (isSubmitted) {
