@@ -4,7 +4,8 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Progress } from '@/components/ui/progress';
 import { useToast } from '@/hooks/use-toast';
-import { AlertTriangle, Clock } from 'lucide-react';
+import { AlertTriangle, Clock, Shield } from 'lucide-react';
+import CodingQuestion from './CodingQuestion';
 
 interface Question {
   id: string;
@@ -15,6 +16,7 @@ interface Question {
   option_d: string;
   correct_answer: string;
   subject: string;
+  question_type?: string;
 }
 
 interface QuizTakingProps {
@@ -53,6 +55,28 @@ export default function QuizTaking({ quizId, userId, onComplete }: QuizTakingPro
     return () => clearInterval(timer);
   }, []);
 
+  // Prevent copy-paste
+  useEffect(() => {
+    const preventCopyPaste = (e: ClipboardEvent) => {
+      e.preventDefault();
+      toast({
+        title: 'Action Blocked',
+        description: 'Copy/paste is not allowed during the quiz',
+        variant: 'destructive'
+      });
+    };
+
+    document.addEventListener('copy', preventCopyPaste);
+    document.addEventListener('paste', preventCopyPaste);
+    document.addEventListener('cut', preventCopyPaste);
+
+    return () => {
+      document.removeEventListener('copy', preventCopyPaste);
+      document.removeEventListener('paste', preventCopyPaste);
+      document.removeEventListener('cut', preventCopyPaste);
+    };
+  }, []);
+
   useEffect(() => {
     const handleVisibilityChange = () => {
       if (document.hidden) {
@@ -60,11 +84,17 @@ export default function QuizTaking({ quizId, userId, onComplete }: QuizTakingPro
         if (!hasWarned) {
           setHasWarned(true);
           toast({
-            title: 'Warning: Tab Switch Detected',
-            description: 'Next tab switch will auto-submit your quiz',
-            variant: 'destructive'
+            title: '⚠️ Warning: Tab Switch Detected',
+            description: 'Next tab switch will auto-submit your quiz!',
+            variant: 'destructive',
+            duration: 5000
           });
         } else {
+          toast({
+            title: 'Quiz Auto-Submitted',
+            description: 'You switched tabs twice. Quiz has been submitted automatically.',
+            variant: 'destructive'
+          });
           handleSubmit(true);
         }
       }
@@ -186,75 +216,94 @@ export default function QuizTaking({ quizId, userId, onComplete }: QuizTakingPro
 
   const currentQuestion = questions[currentQuestionIndex];
   const progress = ((currentQuestionIndex + 1) / questions.length) * 100;
+  const isCodingQuestion = currentQuestion?.question_type === 'coding';
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-primary/10 via-background to-secondary/10 p-6">
-      <div className="container mx-auto max-w-4xl">
+      <div className="container mx-auto max-w-7xl">
         <div className="mb-6 space-y-4">
-          <div className="flex justify-between items-center">
-            <div className="flex items-center gap-2">
-              <Clock className="h-5 w-5" />
-              <span className="text-lg font-mono">{formatTime(timeRemaining)}</span>
-            </div>
-            <div className="text-sm text-muted-foreground">
-              Question {currentQuestionIndex + 1} of {questions.length}
-            </div>
-          </div>
-          <Progress value={progress} />
-          {tabSwitchCount > 0 && (
-            <div className="flex items-center gap-2 text-destructive text-sm">
-              <AlertTriangle className="h-4 w-4" />
-              Tab switches: {tabSwitchCount}
-            </div>
-          )}
-        </div>
-
-        <Card>
-          <CardHeader>
-            <CardTitle>{currentQuestion?.question_text}</CardTitle>
-            <p className="text-sm text-muted-foreground">Subject: {currentQuestion?.subject}</p>
-          </CardHeader>
-          <CardContent className="space-y-4">
-            <div className="space-y-2">
-              {['A', 'B', 'C', 'D'].map((option) => {
-                const optionText = currentQuestion?.[`option_${option.toLowerCase()}` as keyof Question];
-                const isSelected = answers[currentQuestion?.id] === option;
-
-                return (
-                  <Button
-                    key={option}
-                    variant={isSelected ? 'default' : 'outline'}
-                    className="w-full justify-start text-left h-auto p-4"
-                    onClick={() => handleAnswerSelect(option)}
-                  >
-                    <span className="font-bold mr-3">{option}.</span>
-                    <span>{optionText}</span>
-                  </Button>
-                );
-              })}
-            </div>
-
-            <div className="flex justify-between pt-4">
-              <Button
-                onClick={handlePrevious}
-                disabled={currentQuestionIndex === 0}
-                variant="outline"
-              >
-                Previous
-              </Button>
-              
-              {currentQuestionIndex === questions.length - 1 ? (
-                <Button onClick={() => handleSubmit(false)}>
-                  Submit Quiz
-                </Button>
-              ) : (
-                <Button onClick={handleNext}>
-                  Next
-                </Button>
+          <div className="flex justify-between items-center flex-wrap gap-4">
+            <div className="flex items-center gap-4">
+              <div className="flex items-center gap-2 bg-background px-4 py-2 rounded-lg border-2">
+                <Clock className="h-5 w-5 text-primary" />
+                <span className="text-lg font-mono font-bold">{formatTime(timeRemaining)}</span>
+              </div>
+              {tabSwitchCount > 0 && (
+                <div className="flex items-center gap-2 bg-destructive/10 px-4 py-2 rounded-lg border-2 border-destructive/50">
+                  <AlertTriangle className="h-5 w-5 text-destructive" />
+                  <span className="font-medium text-destructive">Warnings: {tabSwitchCount}/2</span>
+                </div>
               )}
             </div>
-          </CardContent>
-        </Card>
+            <div className="flex items-center gap-3">
+              <div className="flex items-center gap-2 text-sm bg-background px-3 py-2 rounded-lg border">
+                <Shield className="h-4 w-4 text-muted-foreground" />
+                <span className="text-muted-foreground">Copy/Paste Disabled</span>
+              </div>
+              <div className="text-sm text-muted-foreground bg-background px-4 py-2 rounded-lg border font-medium">
+                Question {currentQuestionIndex + 1} of {questions.length}
+              </div>
+            </div>
+          </div>
+          <Progress value={progress} className="h-2" />
+        </div>
+
+        {isCodingQuestion ? (
+          <CodingQuestion
+            question={currentQuestion.question_text}
+            subject={currentQuestion.subject}
+            onAnswer={handleAnswerSelect}
+            selectedAnswer={answers[currentQuestion.id]}
+          />
+        ) : (
+          <Card className="border-2">
+            <CardHeader>
+              <CardTitle className="text-xl">{currentQuestion?.question_text}</CardTitle>
+              <p className="text-sm text-muted-foreground">Subject: {currentQuestion?.subject}</p>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <div className="space-y-3">
+                {['A', 'B', 'C', 'D'].map((option) => {
+                  const optionText = currentQuestion?.[`option_${option.toLowerCase()}` as keyof Question];
+                  const isSelected = answers[currentQuestion?.id] === option;
+
+                  return (
+                    <Button
+                      key={option}
+                      variant={isSelected ? 'default' : 'outline'}
+                      className="w-full justify-start text-left h-auto p-4 text-base transition-all hover:scale-[1.02]"
+                      onClick={() => handleAnswerSelect(option)}
+                    >
+                      <span className="font-bold mr-3 text-lg">{option}.</span>
+                      <span>{optionText}</span>
+                    </Button>
+                  );
+                })}
+              </div>
+            </CardContent>
+          </Card>
+        )}
+
+        <div className="flex justify-between pt-4">
+          <Button
+            onClick={handlePrevious}
+            disabled={currentQuestionIndex === 0}
+            variant="outline"
+            size="lg"
+          >
+            ← Previous
+          </Button>
+          
+          {currentQuestionIndex === questions.length - 1 ? (
+            <Button onClick={() => handleSubmit(false)} size="lg" className="font-semibold">
+              Submit Quiz →
+            </Button>
+          ) : (
+            <Button onClick={handleNext} size="lg">
+              Next →
+            </Button>
+          )}
+        </div>
       </div>
     </div>
   );

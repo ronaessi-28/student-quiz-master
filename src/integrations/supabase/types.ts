@@ -42,8 +42,10 @@ export type Database = {
           option_c: string
           option_d: string
           question_text: string
+          question_type: string | null
           quiz_id: string
           subject: string
+          test_cases: Json | null
         }
         Insert: {
           correct_answer: string
@@ -54,8 +56,10 @@ export type Database = {
           option_c: string
           option_d: string
           question_text: string
+          question_type?: string | null
           quiz_id: string
           subject: string
+          test_cases?: Json | null
         }
         Update: {
           correct_answer?: string
@@ -66,8 +70,10 @@ export type Database = {
           option_c?: string
           option_d?: string
           question_text?: string
+          question_type?: string | null
           quiz_id?: string
           subject?: string
+          test_cases?: Json | null
         }
         Relationships: [
           {
@@ -140,6 +146,7 @@ export type Database = {
           description: string | null
           id: string
           max_daily_attempts: number
+          quiz_type: Database["public"]["Enums"]["quiz_type"] | null
           time_limit: number
           title: string
           updated_at: string | null
@@ -150,6 +157,7 @@ export type Database = {
           description?: string | null
           id?: string
           max_daily_attempts?: number
+          quiz_type?: Database["public"]["Enums"]["quiz_type"] | null
           time_limit?: number
           title: string
           updated_at?: string | null
@@ -160,6 +168,7 @@ export type Database = {
           description?: string | null
           id?: string
           max_daily_attempts?: number
+          quiz_type?: Database["public"]["Enums"]["quiz_type"] | null
           time_limit?: number
           title?: string
           updated_at?: string | null
@@ -264,6 +273,7 @@ export type Database = {
     }
     Enums: {
       app_role: "admin" | "user"
+      quiz_type: "aptitude" | "coding" | "technical" | "writing" | "vocabulary"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -392,6 +402,7 @@ export const Constants = {
   public: {
     Enums: {
       app_role: ["admin", "user"],
+      quiz_type: ["aptitude", "coding", "technical", "writing", "vocabulary"],
     },
   },
 } as const
