@@ -3,7 +3,8 @@ import { supabase } from '@/integrations/supabase/client';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { CheckCircle, XCircle, Clock, Award } from 'lucide-react';
+import { CheckCircle, XCircle, Clock, Award, Download } from 'lucide-react';
+import { useToast } from '@/hooks/use-toast';
 
 interface QuizResultsProps {
   attemptId: string;
@@ -37,6 +38,7 @@ export default function QuizResults({ attemptId, onReset }: QuizResultsProps) {
   const [attempt, setAttempt] = useState<QuizAttempt | null>(null);
   const [answers, setAnswers] = useState<UserAnswer[]>([]);
   const [loading, setLoading] = useState(true);
+  const { toast } = useToast();
 
   useEffect(() => {
     fetchResults();
@@ -77,6 +79,31 @@ export default function QuizResults({ attemptId, onReset }: QuizResultsProps) {
     const minutes = Math.floor(seconds / 60);
     const secs = seconds % 60;
     return `${minutes}m ${secs}s`;
+  };
+
+  const handleExportCSV = () => {
+    const csv = [
+      ['Question', 'Subject', 'Your Answer', 'Correct Answer', 'Result'],
+      ...answers.map((answer, idx) => [
+        `Q${idx + 1}: ${answer.questions.question_text}`,
+        answer.questions.subject,
+        `${answer.selected_answer}. ${answer.questions[`option_${answer.selected_answer.toLowerCase()}` as keyof typeof answer.questions]}`,
+        `${answer.questions.correct_answer}. ${answer.questions[`option_${answer.questions.correct_answer.toLowerCase()}` as keyof typeof answer.questions]}`,
+        answer.is_correct ? 'Correct' : 'Incorrect'
+      ])
+    ].map(row => row.join(',')).join('\n');
+
+    const blob = new Blob([csv], { type: 'text/csv' });
+    const url = window.URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `quiz-results-${attemptId}.csv`;
+    a.click();
+    
+    toast({
+      title: 'Export Successful',
+      description: 'Results exported as CSV'
+    });
   };
 
   if (loading || !attempt) {
@@ -144,9 +171,15 @@ export default function QuizResults({ attemptId, onReset }: QuizResultsProps) {
               </div>
             </div>
 
-            <Button onClick={onReset} className="w-full" size="lg">
-              Take Another Quiz
-            </Button>
+            <div className="flex gap-3">
+              <Button onClick={handleExportCSV} variant="outline" size="lg" className="flex-1">
+                <Download className="mr-2 h-4 w-4" />
+                Export CSV
+              </Button>
+              <Button onClick={onReset} size="lg" className="flex-1">
+                Take Another Quiz
+              </Button>
+            </div>
           </CardContent>
         </Card>
 

@@ -5,9 +5,19 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { useToast } from '@/hooks/use-toast';
-import { LogOut, Trophy, Clock, TrendingUp, Code, Brain, FileText, BookOpen, Zap } from 'lucide-react';
+import { LogOut, Trophy, Clock, TrendingUp, Code, Brain, FileText, BookOpen, Zap, User } from 'lucide-react';
 import QuizTaking from '@/components/quiz/QuizTaking';
 import QuizResults from '@/components/quiz/QuizResults';
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
 
 interface Quiz {
   id: string;
@@ -26,6 +36,8 @@ export default function QuizPortal() {
   const [attemptId, setAttemptId] = useState<string>('');
   const [dailyAttempts, setDailyAttempts] = useState(0);
   const [userId, setUserId] = useState<string>('');
+  const [showStartConfirm, setShowStartConfirm] = useState(false);
+  const [pendingQuiz, setPendingQuiz] = useState<Quiz | null>(null);
   const { toast } = useToast();
   const navigate = useNavigate();
 
@@ -78,7 +90,7 @@ export default function QuizPortal() {
     setDailyAttempts(count || 0);
   };
 
-  const handleStartQuiz = async (quiz: Quiz) => {
+  const handleStartQuiz = (quiz: Quiz) => {
     if (!studentName.trim()) {
       toast({
         title: 'Name Required',
@@ -97,8 +109,17 @@ export default function QuizPortal() {
       return;
     }
 
-    setSelectedQuiz(quiz);
-    setQuizStarted(true);
+    setPendingQuiz(quiz);
+    setShowStartConfirm(true);
+  };
+
+  const confirmStartQuiz = () => {
+    if (pendingQuiz) {
+      setSelectedQuiz(pendingQuiz);
+      setQuizStarted(true);
+      setShowStartConfirm(false);
+      setPendingQuiz(null);
+    }
   };
 
   const handleQuizComplete = (completedAttemptId: string) => {
@@ -160,6 +181,10 @@ export default function QuizPortal() {
             </p>
           </div>
           <div className="flex gap-3">
+            <Button onClick={() => navigate('/profile')} variant="outline">
+              <User className="mr-2 h-4 w-4" />
+              Profile
+            </Button>
             <Button onClick={() => navigate('/my-results')} variant="outline">
               <Trophy className="mr-2 h-4 w-4" />
               My Results
@@ -249,6 +274,26 @@ export default function QuizPortal() {
             </Card>
           ))}
         </div>
+
+        <AlertDialog open={showStartConfirm} onOpenChange={setShowStartConfirm}>
+          <AlertDialogContent>
+            <AlertDialogHeader>
+              <AlertDialogTitle>Start Quiz?</AlertDialogTitle>
+              <AlertDialogDescription>
+                Are you sure you want to start "{pendingQuiz?.title}"? The timer will start immediately upon confirmation.
+                <div className="mt-4 p-3 bg-muted rounded-lg space-y-1 text-sm">
+                  <p>• Time Limit: {pendingQuiz?.time_limit} minutes</p>
+                  <p>• Tab switching is monitored</p>
+                  <p>• Copy/paste is disabled</p>
+                </div>
+              </AlertDialogDescription>
+            </AlertDialogHeader>
+            <AlertDialogFooter>
+              <AlertDialogCancel>Cancel</AlertDialogCancel>
+              <AlertDialogAction onClick={confirmStartQuiz}>Start Quiz</AlertDialogAction>
+            </AlertDialogFooter>
+          </AlertDialogContent>
+        </AlertDialog>
       </div>
     </div>
   );

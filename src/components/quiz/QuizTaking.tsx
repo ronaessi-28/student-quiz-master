@@ -4,8 +4,19 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Progress } from '@/components/ui/progress';
 import { useToast } from '@/hooks/use-toast';
-import { AlertTriangle, Clock, Shield } from 'lucide-react';
+import { AlertTriangle, Clock, Shield, Flag, CheckCircle2 } from 'lucide-react';
 import CodingQuestion from './CodingQuestion';
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
+import { cn } from '@/lib/utils';
 
 interface Question {
   id: string;
@@ -29,12 +40,14 @@ export default function QuizTaking({ quizId, userId, onComplete }: QuizTakingPro
   const [questions, setQuestions] = useState<Question[]>([]);
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
   const [answers, setAnswers] = useState<Record<string, string>>({});
+  const [markedForReview, setMarkedForReview] = useState<Set<string>>(new Set());
   const [attemptId, setAttemptId] = useState<string>('');
   const [startTime] = useState(new Date());
   const [timeRemaining, setTimeRemaining] = useState(180 * 60);
   const [tabSwitchCount, setTabSwitchCount] = useState(0);
   const [hasWarned, setHasWarned] = useState(false);
   const [loading, setLoading] = useState(true);
+  const [showQuitConfirm, setShowQuitConfirm] = useState(false);
   const { toast } = useToast();
 
   useEffect(() => {
@@ -151,6 +164,25 @@ export default function QuizTaking({ quizId, userId, onComplete }: QuizTakingPro
     }
   };
 
+  const toggleMarkForReview = () => {
+    const questionId = questions[currentQuestionIndex].id;
+    setMarkedForReview(prev => {
+      const newSet = new Set(prev);
+      if (newSet.has(questionId)) {
+        newSet.delete(questionId);
+      } else {
+        newSet.add(questionId);
+      }
+      return newSet;
+    });
+  };
+
+  const getQuestionStatus = (questionId: string) => {
+    if (markedForReview.has(questionId)) return 'review';
+    if (answers[questionId]) return 'answered';
+    return 'unanswered';
+  };
+
   const handleSubmit = async (autoSubmit = false) => {
     const timeSpent = Math.round((new Date().getTime() - startTime.getTime()) / 1000);
     
@@ -236,6 +268,9 @@ export default function QuizTaking({ quizId, userId, onComplete }: QuizTakingPro
               )}
             </div>
             <div className="flex items-center gap-3">
+              <Button variant="outline" size="sm" onClick={() => setShowQuitConfirm(true)}>
+                Quit Quiz
+              </Button>
               <div className="flex items-center gap-2 text-sm bg-background px-3 py-2 rounded-lg border">
                 <Shield className="h-4 w-4 text-muted-foreground" />
                 <span className="text-muted-foreground">Copy/Paste Disabled</span>
@@ -248,62 +283,143 @@ export default function QuizTaking({ quizId, userId, onComplete }: QuizTakingPro
           <Progress value={progress} className="h-2" />
         </div>
 
-        {isCodingQuestion ? (
-          <CodingQuestion
-            question={currentQuestion.question_text}
-            subject={currentQuestion.subject}
-            onAnswer={handleAnswerSelect}
-            selectedAnswer={answers[currentQuestion.id]}
-          />
-        ) : (
-          <Card className="border-2">
-            <CardHeader>
-              <CardTitle className="text-xl">{currentQuestion?.question_text}</CardTitle>
-              <p className="text-sm text-muted-foreground">Subject: {currentQuestion?.subject}</p>
-            </CardHeader>
-            <CardContent className="space-y-4">
-              <div className="space-y-3">
-                {['A', 'B', 'C', 'D'].map((option) => {
-                  const optionText = currentQuestion?.[`option_${option.toLowerCase()}` as keyof Question];
-                  const isSelected = answers[currentQuestion?.id] === option;
+        <div className="grid grid-cols-12 gap-6">
+          {/* Question Navigation Panel */}
+          <div className="col-span-3">
+            <Card className="sticky top-6">
+              <CardHeader>
+                <CardTitle className="text-sm">Questions</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="grid grid-cols-5 gap-2">
+                  {questions.map((q, idx) => {
+                    const status = getQuestionStatus(q.id);
+                    return (
+                      <Button
+                        key={q.id}
+                        variant="outline"
+                        size="sm"
+                        onClick={() => setCurrentQuestionIndex(idx)}
+                        className={cn(
+                          "h-10 w-10 p-0",
+                          currentQuestionIndex === idx && "ring-2 ring-primary",
+                          status === 'answered' && "bg-green-500/20 border-green-500/50",
+                          status === 'review' && "bg-yellow-500/20 border-yellow-500/50",
+                          status === 'unanswered' && "bg-muted"
+                        )}
+                      >
+                        {idx + 1}
+                      </Button>
+                    );
+                  })}
+                </div>
+                <div className="mt-4 space-y-2 text-xs">
+                  <div className="flex items-center gap-2">
+                    <div className="h-3 w-3 rounded bg-green-500/20 border border-green-500/50" />
+                    <span>Answered</span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <div className="h-3 w-3 rounded bg-yellow-500/20 border border-yellow-500/50" />
+                    <span>Review</span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <div className="h-3 w-3 rounded bg-muted border" />
+                    <span>Not Answered</span>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+          </div>
 
-                  return (
-                    <Button
-                      key={option}
-                      variant={isSelected ? 'default' : 'outline'}
-                      className="w-full justify-start text-left h-auto p-4 text-base transition-all hover:scale-[1.02]"
-                      onClick={() => handleAnswerSelect(option)}
-                    >
-                      <span className="font-bold mr-3 text-lg">{option}.</span>
-                      <span>{optionText}</span>
-                    </Button>
-                  );
-                })}
+          {/* Question Content */}
+          <div className="col-span-9 space-y-4">
+
+            {isCodingQuestion ? (
+              <CodingQuestion
+                question={currentQuestion.question_text}
+                subject={currentQuestion.subject}
+                onAnswer={handleAnswerSelect}
+                selectedAnswer={answers[currentQuestion.id]}
+              />
+            ) : (
+              <Card className="border-2">
+                <CardHeader>
+                  <CardTitle className="text-xl">{currentQuestion?.question_text}</CardTitle>
+                  <p className="text-sm text-muted-foreground">Subject: {currentQuestion?.subject}</p>
+                </CardHeader>
+                <CardContent className="space-y-4">
+                  <div className="space-y-3">
+                    {['A', 'B', 'C', 'D'].map((option) => {
+                      const optionText = currentQuestion?.[`option_${option.toLowerCase()}` as keyof Question];
+                      const isSelected = answers[currentQuestion?.id] === option;
+
+                      return (
+                        <Button
+                          key={option}
+                          variant={isSelected ? 'default' : 'outline'}
+                          className="w-full justify-start text-left h-auto p-4 text-base transition-all hover:scale-[1.02]"
+                          onClick={() => handleAnswerSelect(option)}
+                        >
+                          <span className="font-bold mr-3 text-lg">{option}.</span>
+                          <span>{optionText}</span>
+                        </Button>
+                      );
+                    })}
+                  </div>
+                </CardContent>
+              </Card>
+            )}
+
+            <div className="flex justify-between items-center gap-4">
+              <div className="flex gap-2">
+                <Button
+                  onClick={handlePrevious}
+                  disabled={currentQuestionIndex === 0}
+                  variant="outline"
+                  size="lg"
+                >
+                  ← Previous
+                </Button>
+                <Button
+                  onClick={toggleMarkForReview}
+                  variant={markedForReview.has(currentQuestion.id) ? 'default' : 'outline'}
+                  size="lg"
+                >
+                  <Flag className="mr-2 h-4 w-4" />
+                  {markedForReview.has(currentQuestion.id) ? 'Marked' : 'Mark for Review'}
+                </Button>
               </div>
-            </CardContent>
-          </Card>
-        )}
-
-        <div className="flex justify-between pt-4">
-          <Button
-            onClick={handlePrevious}
-            disabled={currentQuestionIndex === 0}
-            variant="outline"
-            size="lg"
-          >
-            ← Previous
-          </Button>
-          
-          {currentQuestionIndex === questions.length - 1 ? (
-            <Button onClick={() => handleSubmit(false)} size="lg" className="font-semibold">
-              Submit Quiz →
-            </Button>
-          ) : (
-            <Button onClick={handleNext} size="lg">
-              Next →
-            </Button>
-          )}
+              
+              {currentQuestionIndex === questions.length - 1 ? (
+                <Button onClick={() => handleSubmit(false)} size="lg" className="font-semibold">
+                  <CheckCircle2 className="mr-2 h-4 w-4" />
+                  Submit Quiz →
+                </Button>
+              ) : (
+                <Button onClick={handleNext} size="lg">
+                  Next →
+                </Button>
+              )}
+            </div>
+          </div>
         </div>
+
+        <AlertDialog open={showQuitConfirm} onOpenChange={setShowQuitConfirm}>
+          <AlertDialogContent>
+            <AlertDialogHeader>
+              <AlertDialogTitle>Quit Quiz?</AlertDialogTitle>
+              <AlertDialogDescription>
+                Are you sure you want to quit? Your progress will be lost and this will count as an attempt.
+              </AlertDialogDescription>
+            </AlertDialogHeader>
+            <AlertDialogFooter>
+              <AlertDialogCancel>Continue Quiz</AlertDialogCancel>
+              <AlertDialogAction onClick={() => handleSubmit(true)} className="bg-destructive text-destructive-foreground">
+                Quit & Submit
+              </AlertDialogAction>
+            </AlertDialogFooter>
+          </AlertDialogContent>
+        </AlertDialog>
       </div>
     </div>
   );
