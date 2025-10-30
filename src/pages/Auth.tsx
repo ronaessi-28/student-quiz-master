@@ -126,7 +126,7 @@ export default function Auth() {
       }
 
       const { data: inviteData, error: inviteError } = await supabase
-        .rpc('check_invite_code', { p_code: inviteCode }) as { data: boolean | null, error: any };
+        .rpc('check_invite_code' as any, { p_code: inviteCode }) as { data: boolean | null, error: any };
 
       if (inviteError || !inviteData) {
         toast({
@@ -177,7 +177,7 @@ export default function Auth() {
         .eq('user_id', authData.user.id);
 
       // Mark invite code as used via RPC
-      await supabase.rpc('use_invite_code', { 
+      await supabase.rpc('use_invite_code' as any, { 
         p_code: inviteCode, 
         p_user_id: authData.user.id 
       });
