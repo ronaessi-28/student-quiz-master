@@ -36,6 +36,7 @@ export default function QuizPortal() {
   const [attemptId, setAttemptId] = useState<string>('');
   const [dailyAttempts, setDailyAttempts] = useState(0);
   const [userId, setUserId] = useState<string>('');
+  const [loading, setLoading] = useState(true);
   const [showStartConfirm, setShowStartConfirm] = useState(false);
   const [pendingQuiz, setPendingQuiz] = useState<Quiz | null>(null);
   const { toast } = useToast();
@@ -56,6 +57,7 @@ export default function QuizPortal() {
     }
 
     setUserId(session.user.id);
+    setLoading(false);
   };
 
   const fetchQuizzes = async () => {
@@ -160,7 +162,15 @@ export default function QuizPortal() {
     }
   };
 
-  if (quizStarted && selectedQuiz) {
+  if (loading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary"></div>
+      </div>
+    );
+  }
+
+  if (quizStarted && selectedQuiz && userId) {
     return <QuizTaking quizId={selectedQuiz.id} userId={userId} onComplete={handleQuizComplete} />;
   }
 
