@@ -1,20 +1,25 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { supabase } from '@/integrations/supabase/client';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Badge } from '@/components/ui/badge';
 import { useToast } from '@/hooks/use-toast';
-import { ArrowLeft, User, Mail, Shield, Save, Award, TrendingUp } from 'lucide-react';
+import { ArrowLeft, User, Mail, Shield, Save, Award, TrendingUp, Lock } from 'lucide-react';
 import { Label } from '@/components/ui/label';
+import { Separator } from '@/components/ui/separator';
 
 export default function Profile() {
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
+  const [changingPassword, setChangingPassword] = useState(false);
   const [userId, setUserId] = useState('');
   const [email, setEmail] = useState('');
   const [fullName, setFullName] = useState('');
+  const [currentPassword, setCurrentPassword] = useState('');
+  const [newPassword, setNewPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
   const [role, setRole] = useState<'user' | 'admin'>('user');
   const [stats, setStats] = useState({ quizzesTaken: 0, avgScore: 0, totalQuizzes: 0 });
   const navigate = useNavigate();
@@ -110,6 +115,75 @@ export default function Profile() {
     setSaving(false);
   };
 
+  const handlePasswordChange = async () => {
+    if (newPassword !== confirmPassword) {
+      toast({
+        title: 'Error',
+        description: 'Passwords do not match',
+        variant: 'destructive'
+      });
+      return;
+    }
+
+    if (newPassword.length < 6) {
+      toast({
+        title: 'Error',
+        description: 'Password must be at least 6 characters',
+        variant: 'destructive'
+      });
+      return;
+    }
+
+    setChangingPassword(true);
+
+    try {
+      // Re-authenticate user with current password
+      const { error: signInError } = await supabase.auth.signInWithPassword({
+        email,
+        password: currentPassword
+      });
+
+      if (signInError) {
+        toast({
+          title: 'Error',
+          description: 'Current password is incorrect',
+          variant: 'destructive'
+        });
+        setChangingPassword(false);
+        return;
+      }
+
+      // Update password
+      const { error: updateError } = await supabase.auth.updateUser({
+        password: newPassword
+      });
+
+      if (updateError) {
+        toast({
+          title: 'Error',
+          description: updateError.message,
+          variant: 'destructive'
+        });
+      } else {
+        toast({
+          title: 'Success',
+          description: 'Password updated successfully'
+        });
+        setCurrentPassword('');
+        setNewPassword('');
+        setConfirmPassword('');
+      }
+    } catch (error) {
+      toast({
+        title: 'Error',
+        description: 'Failed to update password',
+        variant: 'destructive'
+      });
+    }
+
+    setChangingPassword(false);
+  };
+
   if (loading) {
     return (
       <div className="min-h-screen flex items-center justify-center">
@@ -182,6 +256,68 @@ export default function Profile() {
                 )}
               </Button>
             </div>
+
+            <Separator className="my-6" />
+
+            <Card className="border-2">
+              <CardHeader>
+                <CardTitle className="text-lg flex items-center gap-2">
+                  <Lock className="h-5 w-5" />
+                  Change Password
+                </CardTitle>
+                <CardDescription>Update your account password</CardDescription>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <div className="space-y-2">
+                  <Label htmlFor="currentPassword">Current Password</Label>
+                  <Input
+                    id="currentPassword"
+                    type="password"
+                    value={currentPassword}
+                    onChange={(e) => setCurrentPassword(e.target.value)}
+                    placeholder="Enter current password"
+                  />
+                </div>
+
+                <div className="space-y-2">
+                  <Label htmlFor="newPassword">New Password</Label>
+                  <Input
+                    id="newPassword"
+                    type="password"
+                    value={newPassword}
+                    onChange={(e) => setNewPassword(e.target.value)}
+                    placeholder="Enter new password"
+                  />
+                </div>
+
+                <div className="space-y-2">
+                  <Label htmlFor="confirmPassword">Confirm New Password</Label>
+                  <Input
+                    id="confirmPassword"
+                    type="password"
+                    value={confirmPassword}
+                    onChange={(e) => setConfirmPassword(e.target.value)}
+                    placeholder="Confirm new password"
+                  />
+                </div>
+
+                <Button 
+                  onClick={handlePasswordChange} 
+                  disabled={changingPassword || !currentPassword || !newPassword || !confirmPassword}
+                  size="lg" 
+                  className="w-full"
+                >
+                  {changingPassword ? (
+                    <>Updating Password...</>
+                  ) : (
+                    <>
+                      <Lock className="mr-2 h-4 w-4" />
+                      Update Password
+                    </>
+                  )}
+                </Button>
+              </CardContent>
+            </Card>
 
             {role === 'admin' ? (
               <Card className="bg-gradient-to-br from-purple-500/10 to-pink-500/10 border-purple-500/20">

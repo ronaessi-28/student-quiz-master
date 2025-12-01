@@ -77,21 +77,34 @@ export default function Auth() {
 
     setLoading(true);
     
-    const { error } = await supabase.auth.signInWithPassword({
-      email,
-      password
-    });
-
-    if (error) {
-      toast({
-        title: 'Login Failed',
-        description: error.message,
-        variant: 'destructive'
+    try {
+      // Clear any stale sessions first
+      await supabase.auth.signOut();
+      
+      const { error } = await supabase.auth.signInWithPassword({
+        email,
+        password
       });
-    } else {
+
+      if (error) {
+        toast({
+          title: 'Login Failed',
+          description: error.message,
+          variant: 'destructive'
+        });
+        setLoading(false);
+        return;
+      }
+
       toast({
         title: 'Success',
         description: 'Logged in successfully'
+      });
+    } catch (error) {
+      toast({
+        title: 'Login Failed',
+        description: 'Unable to connect to the server. Please try again.',
+        variant: 'destructive'
       });
     }
     
